@@ -43,6 +43,12 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
     );
   }
 
+  const websiteSecurityChecklist =
+    website.securityChecklist || securityChecklist;
+  const websiteFunctionalityChecklist =
+    website.functionalityChecklist || functionalityChecklist;
+  const websiteSeoChecklist = website.seoChecklist || seoChecklist;
+
   const tabs = [
     {
       id: "overview",
@@ -238,7 +244,7 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
                   Security Checklist
                 </h3>
                 <div className="space-y-3">
-                  {securityChecklist.map((item) => (
+                  {websiteSecurityChecklist.map((item) => (
                     <div
                       key={item.id}
                       className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
@@ -264,7 +270,7 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
                   Functionality Checklist
                 </h3>
                 <div className="space-y-3">
-                  {functionalityChecklist.map((item) => (
+                  {websiteFunctionalityChecklist.map((item) => (
                     <div
                       key={item.id}
                       className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
@@ -296,7 +302,7 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  {seoChecklist.map((item) => (
+                  {websiteSeoChecklist.map((item) => (
                     <div
                       key={item.id}
                       className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
