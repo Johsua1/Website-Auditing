@@ -18,6 +18,8 @@ import {
   CheckCircle2,
   AlertTriangle,
   ExternalLink,
+  Sun,
+  Moon,
 } from "lucide-react";
 import websiteLogo from "../assets/website logo.png";
 
@@ -26,6 +28,9 @@ const Navigation = () => {
   const [isWebsiteMenuOpen, setIsWebsiteMenuOpen] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [isLightMode, setIsLightMode] = useState(() => {
+    return localStorage.getItem("audit-theme") === "light";
+  });
   const location = useLocation();
 
   const notifRef = useRef(null);
@@ -44,6 +49,11 @@ const Navigation = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("light", isLightMode);
+    localStorage.setItem("audit-theme", isLightMode ? "light" : "dark");
+  }, [isLightMode]);
 
   const websiteSubItems = [
     { name: "Date Audited", path: "/date-audited", icon: Calendar },
@@ -152,6 +162,16 @@ const Navigation = () => {
 
           {/* Right: Quick Actions */}
           <div className="ml-auto flex items-center space-x-2">
+            <button
+              type="button"
+              aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
+              aria-pressed={isLightMode}
+              onClick={() => setIsLightMode((light) => !light)}
+              className="rounded-lg p-2 border border-[#202c2e] bg-[#12191b] text-[#94a3b8] transition-all duration-150 hover:bg-[#1a2527] hover:text-[#fff800] hover:border-[#2f3f42]"
+            >
+              {isLightMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+            </button>
+
             {/* Notification Bell with interactive popover */}
             <div className="relative" ref={notifRef}>
               <button
@@ -250,7 +270,7 @@ const Navigation = () => {
                     </div>
                     <div className="flex items-center justify-between text-xs text-[#859496] py-1">
                       <span>Theme</span>
-                      <span className="text-[#e2e8f0]">Paddle Dark</span>
+                      <span className="text-[#e2e8f0]">{isLightMode ? "Paddle Light" : "Paddle Dark"}</span>
                     </div>
                   </div>
                 </div>
@@ -298,7 +318,7 @@ const Navigation = () => {
         </Link>
 
         {/* Nav Links */}
-        <div className="space-y-1.5 p-4">
+        <div className="sidebar-nav space-y-1.5 p-4">
           <Link
             to="/"
             className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all ${

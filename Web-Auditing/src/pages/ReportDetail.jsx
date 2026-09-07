@@ -123,7 +123,7 @@ const ReportDetail = ({ websites }) => {
         {/* Report Content */}
         <div className="rounded-2xl bg-[#0e1516]/95 border border-[#202c2e] shadow-2xl overflow-hidden backdrop-blur-md print:bg-white print:border-gray-300 print:shadow-none">
           {/* Header Banner */}
-          <div className="bg-gradient-to-r from-[#141f21] via-[#162326] to-[#0f1719] text-white p-6 sm:p-8 border-b border-[#223134] print:bg-gray-100 print:text-black">
+          <div className="report-header-banner bg-gradient-to-r from-[#141f21] via-[#162326] to-[#0f1719] text-white p-6 sm:p-8 border-b border-[#223134] print:bg-gray-100 print:text-black">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#fff800]/10 text-[#fff800] border border-[#fff800]/20 text-[11px] font-bold tracking-wider uppercase mb-3">
