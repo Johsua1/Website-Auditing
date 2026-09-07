@@ -1,200 +1,235 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Bell, User, ChevronDown } from "lucide-react";
+import {
+  Menu,
+  X,
+  Bell,
+  User,
+  ChevronDown,
+  LayoutDashboard,
+  Globe,
+  Shield,
+  Zap,
+  TrendingUp,
+  MessageSquare,
+  FileText,
+  CalendarDays,
+  Activity,
+} from "lucide-react";
 import websiteLogo from "../assets/website logo.png";
 
+const NAV_ITEMS = [
+  { name: "Dashboard", path: "/", icon: LayoutDashboard },
+  {
+    name: "Websites",
+    icon: Globe,
+    children: [
+      { name: "All Websites", path: "/websites", icon: Globe },
+      { name: "Date Audited", path: "/date-audited", icon: CalendarDays },
+      { name: "Status", path: "/status", icon: Activity },
+      { name: "Security", path: "/security", icon: Shield },
+      { name: "Functionality", path: "/functionality", icon: Zap },
+      { name: "SEO", path: "/seo", icon: TrendingUp },
+      { name: "Remarks", path: "/remarks", icon: MessageSquare },
+    ],
+  },
+  { name: "Full Report", path: "/reports", icon: FileText },
+];
+
+const isPathActive = (path, currentPath) => {
+  if (path === "/") return currentPath === "/";
+  return currentPath.startsWith(path);
+};
+
+const NavLink = ({ item, depth = 0, onClick }) => {
+  const location = useLocation();
+  const active = isPathActive(item.path, location.pathname);
+  const Icon = item.icon;
+
+  return (
+    <Link
+      to={item.path}
+      onClick={onClick}
+      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150
+        ${depth > 0 ? "ml-4" : ""}
+        ${
+          active
+            ? "bg-emerald-400/10 text-emerald-400 border border-emerald-400/20"
+            : "text-green-100/60 hover:bg-white/5 hover:text-green-100/90 border border-transparent"
+        }`}
+    >
+      {Icon && (
+        <Icon
+          className={`h-4 w-4 flex-shrink-0 ${active ? "text-emerald-400" : "text-green-100/40"}`}
+        />
+      )}
+      {item.name}
+    </Link>
+  );
+};
+
+const NavGroup = ({ item, onClick }) => {
+  const location = useLocation();
+  const Icon = item.icon;
+  const isAnyChildActive = item.children?.some((c) =>
+    isPathActive(c.path, location.pathname)
+  );
+  const [open, setOpen] = useState(isAnyChildActive);
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150 border
+          ${
+            isAnyChildActive
+              ? "bg-emerald-400/10 text-emerald-400 border-emerald-400/20"
+              : "text-green-100/60 hover:bg-white/5 hover:text-green-100/90 border-transparent"
+          }`}
+      >
+        <span className="flex items-center gap-3">
+          <Icon
+            className={`h-4 w-4 flex-shrink-0 ${isAnyChildActive ? "text-emerald-400" : "text-green-100/40"}`}
+          />
+          {item.name}
+        </span>
+        <ChevronDown
+          className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div className="mt-1 space-y-0.5 border-l border-emerald-400/10 ml-5">
+          {item.children.map((child) => (
+            <NavLink key={child.path} item={child} depth={1} onClick={onClick} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const SidebarContent = ({ onClose }) => (
+  <div className="flex h-full flex-col">
+    {/* Logo */}
+    <Link
+      to="/"
+      onClick={onClose}
+      className="flex items-center gap-3 px-5 py-5 border-b border-emerald-400/10"
+    >
+      <img
+        src={websiteLogo}
+        alt="Website Audit"
+        className="h-8 w-auto object-contain"
+      />
+      <div>
+        <span className="block text-sm font-semibold text-green-100/90 leading-tight">
+          Website Audit
+        </span>
+        <span className="block text-xs text-green-100/40 leading-tight">
+          &amp; Maintenance
+        </span>
+      </div>
+    </Link>
+
+    {/* Nav */}
+    <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+      {NAV_ITEMS.map((item) =>
+        item.children ? (
+          <NavGroup key={item.name} item={item} onClick={onClose} />
+        ) : (
+          <NavLink key={item.path} item={item} onClick={onClose} />
+        )
+      )}
+    </nav>
+
+    {/* Bottom user area */}
+    <div className="border-t border-emerald-400/10 px-4 py-4">
+      <button
+        type="button"
+        className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-green-100/50 hover:bg-white/5 hover:text-green-100/80 transition-colors"
+      >
+        <User className="h-4 w-4" />
+        <span>Account</span>
+      </button>
+    </div>
+  </div>
+);
+
 const Navigation = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isWebsiteMenuOpen, setIsWebsiteMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
 
-  const websiteSubItems = [
-    { name: "Date Audited", path: "/date-audited" },
-    { name: "Status", path: "/status" },
-    { name: "Security", path: "/security" },
-    { name: "Functionality", path: "/functionality" },
-    { name: "SEO", path: "/seo" },
-    { name: "Remarks", path: "/remarks" },
-  ];
-
-  const isActive = (path) => {
-    if (path === "/") return location.pathname === "/";
-    return location.pathname.startsWith(path);
-  };
-
-  const isWebsiteSectionActive =
-    isActive("/websites") ||
-    websiteSubItems.some((item) => isActive(item.path));
-
-  const currentItemTitle =
+  const currentTitle =
     location.pathname === "/"
       ? "Dashboard"
-      : location.pathname.startsWith("/websites")
-        ? "Website"
-        : websiteSubItems.find((item) => isActive(item.path))?.name ||
-          (location.pathname.startsWith("/reports")
-            ? "Full Report"
-            : "Website Audit");
-
-  const closeSidebar = () => {
-    setIsMobileMenuOpen(false);
-  };
+      : location.pathname.startsWith("/websites/")
+        ? "Website Detail"
+        : location.pathname.startsWith("/websites")
+          ? "All Websites"
+          : location.pathname.startsWith("/date-audited")
+            ? "Date Audited"
+            : location.pathname.startsWith("/status")
+              ? "Status"
+              : location.pathname.startsWith("/security")
+                ? "Security"
+                : location.pathname.startsWith("/functionality")
+                  ? "Functionality"
+                  : location.pathname.startsWith("/seo")
+                    ? "SEO"
+                    : location.pathname.startsWith("/remarks")
+                      ? "Remarks"
+                      : location.pathname.startsWith("/reports")
+                        ? "Full Report"
+                        : "Website Audit";
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white shadow-md">
-        <div className="relative flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex min-w-0 items-center gap-2">
-            <button
-              type="button"
-              aria-label={
-                isMobileMenuOpen ? "Close navigation" : "Open navigation"
-              }
-              aria-expanded={isMobileMenuOpen}
-              onClick={() => setIsMobileMenuOpen((open) => !open)}
-              className="flex-shrink-0 rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-            <span className="max-w-28 truncate text-sm font-semibold text-gray-700 sm:max-w-none sm:text-base">
-              {currentItemTitle}
-            </span>
-          </div>
+      {/* ── Desktop persistent sidebar ── */}
+      <aside className="sidebar fixed left-0 top-0 z-30 hidden h-full w-64 lg:block">
+        <SidebarContent onClose={() => {}} />
+      </aside>
 
-          <Link
-            to="/"
-            className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2"
-          >
-            <img
-              src={websiteLogo}
-              alt="Website Audit and Maintenance"
-              className="h-8 w-auto max-w-20 object-contain"
-            />
-            <span className="whitespace-nowrap text-sm font-bold text-gray-900 sm:text-xl">
-              Website Audit & Maintenance
-            </span>
-          </Link>
-
-          <div className="ml-auto flex items-center space-x-2">
-            <button
-              type="button"
-              aria-label="Notifications"
-              className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-            >
-              <Bell className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              aria-label="Profile"
-              className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-            >
-              <User className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 top-16 z-40 bg-black/20"
-          onClick={closeSidebar}
-        />
-      )}
-
-      <aside
-        className={`fixed left-0 top-16 z-40 h-[calc(100vh-4rem)] w-72 transform overflow-y-auto border-r border-gray-200 bg-white shadow-xl transition-transform duration-200 ${
-          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <Link
-          to="/"
-          className="flex flex-col items-center gap-2 border-b border-gray-200 p-5 text-center"
-          onClick={closeSidebar}
+      {/* ── Mobile top bar ── */}
+      <header className="fixed top-0 left-0 right-0 z-40 flex h-14 items-center justify-between border-b border-emerald-400/10 bg-[#080d0d]/90 backdrop-blur-md px-4 lg:hidden">
+        <button
+          type="button"
+          onClick={() => setMobileOpen((o) => !o)}
+          className="rounded-lg p-2 text-green-100/60 hover:bg-white/5 hover:text-green-100/90 transition-colors"
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
         >
-          <img
-            src={websiteLogo}
-            alt="Website Audit and Maintenance"
-            className="h-20 w-auto max-w-full object-contain"
-          />
-          <span className="text-base font-bold text-gray-900">
-            Website Audit & Maintenance
+          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+
+        <Link to="/" className="flex items-center gap-2">
+          <img src={websiteLogo} alt="Logo" className="h-7 w-auto object-contain" />
+          <span className="text-sm font-semibold text-green-100/90 truncate max-w-[160px]">
+            {currentTitle}
           </span>
         </Link>
-        <div className="space-y-1 p-4">
-          <Link
-            to="/"
-            className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-              isActive("/")
-                ? "bg-blue-50 text-blue-700"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
-            onClick={closeSidebar}
-          >
-            Dashboard
-          </Link>
 
-          <button
-            type="button"
-            onClick={() => setIsWebsiteMenuOpen((open) => !open)}
-            aria-expanded={isWebsiteMenuOpen}
-            className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm font-medium transition-colors ${
-              isWebsiteSectionActive
-                ? "bg-blue-50 text-blue-700"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
-          >
-            Website
-            <ChevronDown
-              className={`h-4 w-4 transition-transform ${isWebsiteMenuOpen ? "rotate-180" : ""}`}
-            />
-          </button>
+        <button
+          type="button"
+          aria-label="Notifications"
+          className="rounded-lg p-2 text-green-100/60 hover:bg-white/5 hover:text-green-100/90 transition-colors"
+        >
+          <Bell className="h-5 w-5" />
+        </button>
+      </header>
 
-          {isWebsiteMenuOpen && (
-            <div className="ml-4 space-y-1 border-l border-gray-200 pl-3">
-              <Link
-                to="/websites"
-                className={`block rounded-md px-3 py-2 text-sm font-medium ${
-                  isActive("/websites")
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-                onClick={closeSidebar}
-              >
-                All Websites
-              </Link>
-              {websiteSubItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`block rounded-md px-3 py-2 text-sm ${
-                    isActive(item.path)
-                      ? "bg-blue-50 text-blue-700"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
-                  onClick={closeSidebar}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          )}
-
-          <Link
-            to="/reports"
-            className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-              isActive("/reports")
-                ? "bg-blue-50 text-blue-700"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
-            onClick={closeSidebar}
-          >
-            Full Report
-          </Link>
-        </div>
+      {/* ── Mobile slide-over sidebar ── */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+      <aside
+        className={`sidebar fixed left-0 top-0 z-50 h-full w-64 transform transition-transform duration-250 lg:hidden
+          ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        <SidebarContent onClose={() => setMobileOpen(false)} />
       </aside>
     </>
   );

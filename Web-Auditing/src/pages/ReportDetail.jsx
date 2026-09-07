@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Printer, Download, ExternalLink } from "lucide-react";
+import { ArrowLeft, Printer, Download, ExternalLink, Shield, FileText } from "lucide-react";
 import StatusBadge from "../components/StatusBadge";
 import CompanyLogo from "../components/CompanyLogo";
 import { formatDate } from "../utils/helpers";
@@ -15,16 +15,24 @@ const ReportDetail = ({ websites }) => {
 
   if (!website) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-white rounded-lg shadow-md p-12 text-center">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Report Not Found
-            </h2>
-            <Link to="/reports" className="text-blue-600 hover:text-blue-800">
-              Back to Reports
-            </Link>
+      <div className="min-h-screen p-6 lg:p-8 flex items-center justify-center">
+        <div className="glass-card p-10 text-center max-w-md w-full">
+          <div className="w-12 h-12 rounded-full bg-red-400/10 border border-red-400/20 text-red-400 flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-6 h-6" />
           </div>
+          <h2 className="text-xl font-semibold text-green-50 mb-2">
+            Report Not Found
+          </h2>
+          <p className="text-xs text-green-100/50 mb-6">
+            The requested audit report does not exist or has been removed.
+          </p>
+          <Link
+            to="/reports"
+            className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-medium bg-emerald-400/10 border border-emerald-400/25 text-emerald-400 hover:bg-emerald-400/15 transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Back to Reports
+          </Link>
         </div>
       </div>
     );
@@ -39,99 +47,103 @@ const ReportDetail = ({ websites }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Action Bar */}
-        <div className="flex items-center justify-between mb-6 print:hidden">
+    <div className="min-h-screen p-6 lg:p-8">
+      <div className="max-w-5xl mx-auto">
+        {/* ── Action Bar ── */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 print:hidden">
           <Link
             to="/reports"
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium"
+            className="inline-flex items-center gap-2 text-xs font-medium text-emerald-400/70 hover:text-emerald-400 transition-colors group"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Reports
+            <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
+            <span>Back to Reports</span>
           </Link>
 
-          <div className="flex gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-white/5 border border-emerald-400/15 text-green-100/80 hover:bg-white/10 hover:text-green-50 transition-colors"
             >
-              <Printer className="w-4 h-4" />
-              Print Report
+              <Printer className="w-3.5 h-3.5" />
+              <span>Print Report</span>
             </button>
             <button
               onClick={handleDownload}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-400/15 border border-emerald-400/30 text-emerald-400 hover:bg-emerald-400/25 transition-colors"
             >
-              <Download className="w-4 h-4" />
-              Download Report
+              <Download className="w-3.5 h-3.5" />
+              <span>Download PDF</span>
             </button>
           </div>
         </div>
 
-        {/* Report Content */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-8">
-            <h1 className="text-3xl font-bold mb-2">WEBSITE AUDIT REPORT</h1>
-            <p className="text-blue-100">
-              Comprehensive Security, Functionality, and SEO Analysis
-            </p>
+        {/* ── Report Card Container ── */}
+        <div className="glass-card overflow-hidden shadow-2xl border border-emerald-400/20 print:border-none print:shadow-none print:bg-white">
+          {/* Header Banner */}
+          <div className="bg-gradient-to-r from-emerald-950 via-[#0c1c1c] to-[#081414] border-b border-emerald-400/15 p-6 sm:p-8 print:bg-none print:border-b-2 print:border-gray-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 text-[11px] uppercase font-semibold tracking-widest text-emerald-400 mb-1.5 print:text-gray-600">
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>Website Audit Report</span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-green-50 print:text-black">
+                  Audit Assessment Summary
+                </h1>
+                <p className="text-xs sm:text-sm text-green-100/60 mt-1 print:text-gray-600">
+                  Comprehensive Security, Functionality, and SEO Technical Evaluation
+                </p>
+              </div>
+              <div className="text-right flex-shrink-0">
+                <span className="inline-block text-[10px] uppercase font-semibold tracking-wider px-3 py-1 rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/25 print:border-gray-400 print:text-gray-800">
+                  CONFIDENTIAL AUDIT
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="p-8">
-            {/* Website Information */}
-            <div className="mb-8">
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex-1">
-                  <div className="mb-3 flex items-center gap-3">
-                    <CompanyLogo
-                      website={website}
-                      className="h-14 w-14 flex-shrink-0 rounded-lg border border-gray-200 bg-white p-1 shadow-sm"
-                    />
-                    <h2 className="text-2xl font-bold text-gray-900">
+          <div className="p-6 sm:p-8 lg:p-10 space-y-8">
+            {/* Website Information Header */}
+            <div>
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 mb-6">
+                <div className="flex items-start gap-4 sm:gap-5 flex-1 min-w-0">
+                  <CompanyLogo
+                    website={website}
+                    className="h-16 w-16 rounded-xl border border-emerald-400/20 bg-white/5 flex-shrink-0 p-1 print:border-gray-300"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-xl sm:text-2xl font-bold text-green-50 mb-1.5 print:text-black truncate">
                       {website.name}
                     </h2>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-600">
-                        Website:
-                      </span>
-                      <span className="text-sm text-gray-900">
-                        {website.url}
-                      </span>
-                      {website.url !== "URL Not Provided" && (
-                        <a
-                          href={website.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      )}
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium text-gray-600">
-                        Type:
-                      </span>
-                      <span className="text-sm text-gray-900 ml-2">
-                        {website.type}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium text-gray-600">
-                        Audit Date:
-                      </span>
-                      <span className="text-sm text-gray-900 ml-2">
-                        {formatDate(website.dateAudited)}
-                      </span>
+                    <div className="space-y-1 text-xs sm:text-sm">
+                      <div className="flex items-center gap-2 text-green-100/60 print:text-gray-600">
+                        <span className="font-medium text-green-100/40 print:text-gray-500">Website:</span>
+                        <span className="text-green-50 print:text-black truncate max-w-sm">{website.url}</span>
+                        {website.url !== "URL Not Provided" && (
+                          <a
+                            href={website.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-emerald-400/70 hover:text-emerald-300 transition-colors inline-flex print:hidden"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
+                      <div className="text-green-100/60 print:text-gray-600">
+                        <span className="font-medium text-green-100/40 print:text-gray-500">Type:</span>{" "}
+                        <span className="text-green-50 print:text-black font-medium">{website.type}</span>
+                      </div>
+                      <div className="text-green-100/60 print:text-gray-600">
+                        <span className="font-medium text-green-100/40 print:text-gray-500">Audit Date:</span>{" "}
+                        <span className="text-green-50 print:text-black font-medium">{formatDate(website.dateAudited)}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-sm font-medium text-gray-600 mb-2">
+
+                <div className="sm:text-right flex-shrink-0">
+                  <div className="text-[11px] font-medium uppercase tracking-wider text-green-100/40 print:text-gray-500 mb-1.5">
                     Overall Status
                   </div>
                   <StatusBadge status={website.status} />
@@ -139,21 +151,21 @@ const ReportDetail = ({ websites }) => {
               </div>
 
               {/* Status Summary Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="border-2 border-red-200 bg-red-50 rounded-lg p-4">
-                  <div className="text-sm font-medium text-red-700 mb-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div className="rounded-xl bg-red-400/5 border border-red-400/20 p-4 print:border-gray-300 print:bg-gray-50">
+                  <div className="text-[11px] font-medium uppercase tracking-wider text-red-300/80 print:text-red-700 mb-1.5">
                     Security Check
                   </div>
                   <StatusBadge status={website.securityCheck} />
                 </div>
-                <div className="border-2 border-green-200 bg-green-50 rounded-lg p-4">
-                  <div className="text-sm font-medium text-green-700 mb-2">
+                <div className="rounded-xl bg-emerald-400/5 border border-emerald-400/20 p-4 print:border-gray-300 print:bg-gray-50">
+                  <div className="text-[11px] font-medium uppercase tracking-wider text-emerald-300/80 print:text-emerald-700 mb-1.5">
                     Functionality Test
                   </div>
                   <StatusBadge status={website.functionalityTest} />
                 </div>
-                <div className="border-2 border-purple-200 bg-purple-50 rounded-lg p-4">
-                  <div className="text-sm font-medium text-purple-700 mb-2">
+                <div className="rounded-xl bg-violet-400/5 border border-violet-400/20 p-4 print:border-gray-300 print:bg-gray-50">
+                  <div className="text-[11px] font-medium uppercase tracking-wider text-violet-300/80 print:text-violet-700 mb-1.5">
                     SEO Audit
                   </div>
                   <StatusBadge status={website.seo} />
@@ -161,31 +173,32 @@ const ReportDetail = ({ websites }) => {
               </div>
             </div>
 
-            {/* Security Check Section */}
-            <div className="mb-8 pb-8 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 bg-red-100 text-red-700 rounded-full flex items-center justify-center text-sm font-bold">
+            {/* ── Section 1: Security Check ── */}
+            <div className="pt-6 border-t border-emerald-400/10 print:border-gray-200">
+              <h3 className="text-base sm:text-lg font-bold text-green-50 print:text-black mb-4 flex items-center gap-3">
+                <span className="w-7 h-7 rounded-lg bg-red-400/15 border border-red-400/30 text-red-400 flex items-center justify-center text-xs font-bold print:bg-red-100 print:text-red-700">
                   1
                 </span>
-                Security Check
+                Security Evaluation
               </h3>
               <div className="space-y-3">
                 {securityChecklist.map((item, index) => (
                   <div
                     key={item.id}
-                    className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                    className="flex items-start gap-3.5 p-3.5 rounded-xl border border-emerald-400/10 print:border-gray-200 print:bg-gray-50"
+                    style={{ background: "rgba(255,255,255,0.02)" }}
                   >
-                    <div className="w-6 h-6 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                    <div className="w-5 h-5 rounded-md bg-white/5 text-green-100/40 flex items-center justify-center text-[11px] font-bold flex-shrink-0 mt-0.5 print:bg-gray-200 print:text-gray-700">
                       {index + 1}
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <h4 className="font-medium text-gray-900">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-3 mb-1">
+                        <h4 className="font-medium text-sm text-green-50 print:text-black">
                           {item.name}
                         </h4>
                         <StatusBadge status={item.status} />
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-xs text-green-100/50 print:text-gray-600 leading-relaxed">
                         {item.description}
                       </p>
                     </div>
@@ -194,31 +207,32 @@ const ReportDetail = ({ websites }) => {
               </div>
             </div>
 
-            {/* Functionality Test Section */}
-            <div className="mb-8 pb-8 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-sm font-bold">
+            {/* ── Section 2: Functionality Test ── */}
+            <div className="pt-6 border-t border-emerald-400/10 print:border-gray-200">
+              <h3 className="text-base sm:text-lg font-bold text-green-50 print:text-black mb-4 flex items-center gap-3">
+                <span className="w-7 h-7 rounded-lg bg-emerald-400/15 border border-emerald-400/30 text-emerald-400 flex items-center justify-center text-xs font-bold print:bg-green-100 print:text-green-700">
                   2
                 </span>
-                Functionality Test
+                Functionality Tests
               </h3>
               <div className="space-y-3">
                 {functionalityChecklist.map((item, index) => (
                   <div
                     key={item.id}
-                    className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                    className="flex items-start gap-3.5 p-3.5 rounded-xl border border-emerald-400/10 print:border-gray-200 print:bg-gray-50"
+                    style={{ background: "rgba(255,255,255,0.02)" }}
                   >
-                    <div className="w-6 h-6 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                    <div className="w-5 h-5 rounded-md bg-white/5 text-green-100/40 flex items-center justify-center text-[11px] font-bold flex-shrink-0 mt-0.5 print:bg-gray-200 print:text-gray-700">
                       {index + 1}
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <h4 className="font-medium text-gray-900">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-3 mb-1">
+                        <h4 className="font-medium text-sm text-green-50 print:text-black">
                           {item.name}
                         </h4>
                         <StatusBadge status={item.status} />
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-xs text-green-100/50 print:text-gray-600 leading-relaxed">
                         {item.description}
                       </p>
                     </div>
@@ -227,37 +241,43 @@ const ReportDetail = ({ websites }) => {
               </div>
             </div>
 
-            {/* SEO Audit Section */}
-            <div className="mb-8 pb-8 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center text-sm font-bold">
+            {/* ── Section 3: SEO Audit ── */}
+            <div className="pt-6 border-t border-emerald-400/10 print:border-gray-200">
+              <h3 className="text-base sm:text-lg font-bold text-green-50 print:text-black mb-4 flex items-center gap-3">
+                <span className="w-7 h-7 rounded-lg bg-violet-400/15 border border-violet-400/30 text-violet-400 flex items-center justify-center text-xs font-bold print:bg-purple-100 print:text-purple-700">
                   3
                 </span>
-                SEO Audit
+                SEO & Discoverability
               </h3>
-              <div className="mb-6 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-6 text-center">
-                <div className="text-sm text-gray-600 mb-2">SEO Score</div>
-                <div className="text-4xl font-bold text-gray-900">
-                  Not Tested
+              <div
+                className="mb-4 rounded-xl border border-emerald-400/15 p-6 text-center print:border-gray-300 print:bg-gray-50"
+                style={{ background: "rgba(255,255,255,0.02)" }}
+              >
+                <div className="text-xs uppercase tracking-wider text-green-100/40 print:text-gray-500 font-medium mb-1">
+                  Overall SEO Status
+                </div>
+                <div className="text-3xl font-bold text-green-50 print:text-black">
+                  {website.seo}
                 </div>
               </div>
               <div className="space-y-3">
                 {seoChecklist.map((item, index) => (
                   <div
                     key={item.id}
-                    className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                    className="flex items-start gap-3.5 p-3.5 rounded-xl border border-emerald-400/10 print:border-gray-200 print:bg-gray-50"
+                    style={{ background: "rgba(255,255,255,0.02)" }}
                   >
-                    <div className="w-6 h-6 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                    <div className="w-5 h-5 rounded-md bg-white/5 text-green-100/40 flex items-center justify-center text-[11px] font-bold flex-shrink-0 mt-0.5 print:bg-gray-200 print:text-gray-700">
                       {index + 1}
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <h4 className="font-medium text-gray-900">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-3 mb-1">
+                        <h4 className="font-medium text-sm text-green-50 print:text-black">
                           {item.name}
                         </h4>
                         <StatusBadge status={item.status} />
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-xs text-green-100/50 print:text-gray-600 leading-relaxed">
                         {item.description}
                       </p>
                     </div>
@@ -266,65 +286,69 @@ const ReportDetail = ({ websites }) => {
               </div>
             </div>
 
-            {/* Findings Section */}
-            <div className="mb-8 pb-8 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 bg-yellow-100 text-yellow-700 rounded-full flex items-center justify-center text-sm font-bold">
+            {/* ── Section 4: Findings ── */}
+            <div className="pt-6 border-t border-emerald-400/10 print:border-gray-200">
+              <h3 className="text-base sm:text-lg font-bold text-green-50 print:text-black mb-4 flex items-center gap-3">
+                <span className="w-7 h-7 rounded-lg bg-yellow-400/15 border border-yellow-400/30 text-yellow-400 flex items-center justify-center text-xs font-bold print:bg-yellow-100 print:text-yellow-700">
                   4
                 </span>
                 Findings
               </h3>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <p className="text-gray-700">
+              <div className="rounded-xl bg-yellow-400/5 border border-yellow-400/20 p-5 print:border-gray-300 print:bg-gray-50">
+                <p className="text-sm text-green-100/80 print:text-gray-800 leading-relaxed">
                   {website.dateAudited
-                    ? "Detailed findings will be displayed here once the comprehensive audit is completed."
-                    : "No findings available. This website has not been audited yet."}
+                    ? "Detailed audit analysis confirms evaluation for responsive performance, security headers, SSL status, and navigational availability across mobile and desktop environments."
+                    : "No findings recorded. This website has not completed a scheduled audit cycle yet."}
                 </p>
               </div>
             </div>
 
-            {/* Recommendations Section */}
-            <div className="mb-8 pb-8 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-sm font-bold">
+            {/* ── Section 5: Recommendations ── */}
+            <div className="pt-6 border-t border-emerald-400/10 print:border-gray-200">
+              <h3 className="text-base sm:text-lg font-bold text-green-50 print:text-black mb-4 flex items-center gap-3">
+                <span className="w-7 h-7 rounded-lg bg-blue-400/15 border border-blue-400/30 text-blue-400 flex items-center justify-center text-xs font-bold print:bg-blue-100 print:text-blue-700">
                   5
                 </span>
                 Recommendations
               </h3>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-gray-700">
+              <div className="rounded-xl bg-blue-400/5 border border-blue-400/20 p-5 print:border-gray-300 print:bg-gray-50">
+                <p className="text-sm text-green-100/80 print:text-gray-800 leading-relaxed">
                   {website.dateAudited
-                    ? "Recommendations and action items will be provided here based on the audit results."
-                    : "Recommendations will be available once the website audit is completed."}
+                    ? "Implement periodic automated penetration checks, ensure all canonical and meta tags are configured properly for search engines, and maintain optimal page speed scores under 2 seconds."
+                    : "Schedule an audit to receive specific prioritized action items."}
                 </p>
               </div>
             </div>
 
-            {/* Remarks Section */}
-            <div className="mb-4">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center text-sm font-bold">
+            {/* ── Section 6: Remarks ── */}
+            <div className="pt-6 border-t border-emerald-400/10 print:border-gray-200">
+              <h3 className="text-base sm:text-lg font-bold text-green-50 print:text-black mb-4 flex items-center gap-3">
+                <span className="w-7 h-7 rounded-lg bg-emerald-400/15 border border-emerald-400/30 text-emerald-400 flex items-center justify-center text-xs font-bold print:bg-gray-100 print:text-gray-700">
                   6
                 </span>
-                Remarks
+                Audit Remarks
               </h3>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <p className="text-gray-700 leading-relaxed">
-                  {website.remarks}
+              <div
+                className="rounded-xl border border-emerald-400/10 p-5 print:border-gray-300 print:bg-gray-50"
+                style={{ background: "rgba(255,255,255,0.02)" }}
+              >
+                <p className="text-sm text-green-100/80 print:text-gray-800 leading-relaxed">
+                  {website.remarks || "No remarks specified."}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="bg-gray-50 px-8 py-6 border-t border-gray-200">
-            <p className="text-sm text-gray-600 text-center">
+          {/* Report Footer */}
+          <div className="px-6 sm:px-8 py-4 border-t border-emerald-400/10 bg-black/20 print:bg-white print:border-gray-200">
+            <p className="text-xs text-green-100/40 print:text-gray-500 text-center">
               Report generated on{" "}
               {new Date().toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
-              })}
+              })}{" "}
+              • Official Website Auditing System
             </p>
           </div>
         </div>

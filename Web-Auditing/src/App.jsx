@@ -29,11 +29,7 @@ function App() {
     setWebsites(prevWebsites =>
       prevWebsites.map(w =>
         w.id === websiteId
-          ? {
-              ...w,
-              ...auditData,
-              dateAudited: auditData.dateAudited
-            }
+          ? { ...w, ...auditData, dateAudited: auditData.dateAudited }
           : w
       )
     );
@@ -41,18 +37,27 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Navigation />
-        
+      {/* Background effects */}
+      <div className="grain-overlay" aria-hidden="true" />
+      <div className="bg-glow-green" aria-hidden="true" />
+      <div className="bg-glow-teal" aria-hidden="true" />
+
+      <Navigation />
+
+      {/* Main content — offset by sidebar on desktop */}
+      <div className="relative z-10 lg:pl-64">
+        {/* Mobile top-bar spacer */}
+        <div className="h-14 lg:h-0" />
+
         <Routes>
           <Route path="/" element={<Dashboard websites={websites} />} />
-          <Route 
-            path="/websites" 
-            element={<Websites websites={websites} onStartAudit={handleStartAudit} />} 
+          <Route
+            path="/websites"
+            element={<Websites websites={websites} onStartAudit={handleStartAudit} />}
           />
-          <Route 
-            path="/websites/:id" 
-            element={<WebsiteDetail websites={websites} onStartAudit={handleStartAudit} />} 
+          <Route
+            path="/websites/:id"
+            element={<WebsiteDetail websites={websites} onStartAudit={handleStartAudit} />}
           />
           <Route path="/date-audited" element={<DateAudited websites={websites} />} />
           <Route path="/status" element={<Status websites={websites} />} />
@@ -63,18 +68,18 @@ function App() {
           <Route path="/reports" element={<Reports websites={websites} />} />
           <Route path="/reports/:id" element={<ReportDetail websites={websites} />} />
         </Routes>
-
-        {showAuditModal && (
-          <StartAuditModal
-            website={selectedWebsite}
-            onClose={() => {
-              setShowAuditModal(false);
-              setSelectedWebsite(null);
-            }}
-            onSave={handleSaveAudit}
-          />
-        )}
       </div>
+
+      {showAuditModal && (
+        <StartAuditModal
+          website={selectedWebsite}
+          onClose={() => {
+            setShowAuditModal(false);
+            setSelectedWebsite(null);
+          }}
+          onSave={handleSaveAudit}
+        />
+      )}
     </Router>
   );
 }

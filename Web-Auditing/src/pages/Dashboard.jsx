@@ -9,367 +9,262 @@ import {
   FileText,
   ExternalLink,
   Eye,
+  Activity,
 } from "lucide-react";
 import StatCard from "../components/StatCard";
 import SearchBar from "../components/SearchBar";
 import StatusBadge from "../components/StatusBadge";
 import CompanyLogo from "../components/CompanyLogo";
-import {
-  getStatistics,
-  getCurrentQuarter,
-  filterWebsites,
-} from "../utils/helpers";
+import { getStatistics, getCurrentQuarter } from "../utils/helpers";
 
 const Dashboard = ({ websites }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilter, setSelectedFilter] = useState(null);
   const stats = getStatistics(websites);
   const quarter = getCurrentQuarter();
-  
-  // Apply filters
+
   let filteredWebsites = websites;
-  
-  // Apply search filter
   if (searchTerm) {
-    filteredWebsites = filteredWebsites.filter(w => 
-      w.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      w.url.toLowerCase().includes(searchTerm.toLowerCase())
+    filteredWebsites = filteredWebsites.filter(
+      (w) =>
+        w.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        w.url.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
-  
-  // Apply status filter from stat cards
   if (selectedFilter) {
-    switch(selectedFilter) {
-      case 'audited':
-        filteredWebsites = filteredWebsites.filter(w => w.dateAudited !== null);
-        break;
-      case 'pending':
-        filteredWebsites = filteredWebsites.filter(w => w.status === 'Pending');
-        break;
-      case 'passed':
-        filteredWebsites = filteredWebsites.filter(w => w.status === 'Passed');
-        break;
-      case 'needsReview':
-        filteredWebsites = filteredWebsites.filter(w => w.status === 'Needs Review');
-        break;
-      case 'failed':
-        filteredWebsites = filteredWebsites.filter(w => w.status === 'Failed');
-        break;
-      default:
-        break;
-    }
+    const filterMap = {
+      audited: (w) => w.dateAudited !== null,
+      pending: (w) => w.status === "Pending",
+      passed: (w) => w.status === "Passed",
+      needsReview: (w) => w.status === "Needs Review",
+      failed: (w) => w.status === "Failed",
+    };
+    if (filterMap[selectedFilter])
+      filteredWebsites = filteredWebsites.filter(filterMap[selectedFilter]);
   }
-  
-  const handleFilterClick = (filter) => {
+
+  const handleFilterClick = (filter) =>
     setSelectedFilter(selectedFilter === filter ? null : filter);
+
+  const filterLabel = {
+    audited: "Audited",
+    pending: "Pending",
+    passed: "Passed",
+    needsReview: "Needs Review",
+    failed: "Failed",
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-3xl font-bold text-gray-900">
-              Website Audit & Maintenance
-            </h1>
-            <div className="text-sm font-medium text-gray-600 bg-white px-4 py-2 rounded-lg border border-gray-200">
-              {quarter}
-            </div>
-          </div>
-          <p className="text-gray-600">
+    <div className="min-h-screen p-6 lg:p-8">
+      {/* ── Page header ── */}
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-green-50">
+            Dashboard
+          </h1>
+          <p className="mt-1 text-sm text-green-100/50">
             Monitor, audit, and maintain company websites efficiently.
           </p>
         </div>
+        <span className="flex-shrink-0 rounded-lg border border-emerald-400/20 bg-emerald-400/5 px-4 py-2 text-xs font-medium text-emerald-400 tracking-wide">
+          {quarter}
+        </span>
+      </div>
 
-        {/* Search Bar */}
-        <div className="mb-8">
-          <SearchBar
-            value={searchTerm}
-            onChange={setSearchTerm}
-            placeholder="Search websites..."
-          />
-          {selectedFilter && (
-            <div className="mt-4 flex items-center gap-2">
-              <span className="text-sm text-gray-600">Filtered by:</span>
-              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                {selectedFilter === 'audited' && 'Audited'}
-                {selectedFilter === 'pending' && 'Pending'}
-                {selectedFilter === 'passed' && 'Passed'}
-                {selectedFilter === 'needsReview' && 'Needs Review'}
-                {selectedFilter === 'failed' && 'Failed'}
-              </span>
-              <button
-                onClick={() => setSelectedFilter(null)}
-                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Clear Filter
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-          <div onClick={() => setSelectedFilter(null)}>
-            <StatCard 
-              title="Total Websites" 
-              value={stats.total} 
-              color="blue"
-              icon={<Globe className="w-8 h-8" />}
-              isActive={selectedFilter === null}
-              clickable={false}
-            />
-          </div>
-          <div onClick={() => handleFilterClick('audited')} className="cursor-pointer">
-            <StatCard 
-              title="Audited" 
-              value={stats.audited} 
-              color="purple"
-              icon={<CheckCircle className="w-8 h-8" />}
-              isActive={selectedFilter === 'audited'}
-              clickable={true}
-            />
-          </div>
-          <div onClick={() => handleFilterClick('pending')} className="cursor-pointer">
-            <StatCard 
-              title="Pending" 
-              value={stats.pending} 
-              color="gray"
-              icon={<FileText className="w-8 h-8" />}
-              isActive={selectedFilter === 'pending'}
-              clickable={true}
-            />
-          </div>
-          <div onClick={() => handleFilterClick('passed')} className="cursor-pointer">
-            <StatCard 
-              title="Passed" 
-              value={stats.passed} 
-              color="green"
-              icon={<CheckCircle className="w-8 h-8" />}
-              isActive={selectedFilter === 'passed'}
-              clickable={true}
-            />
-          </div>
-          <div onClick={() => handleFilterClick('needsReview')} className="cursor-pointer">
-            <StatCard 
-              title="Needs Review" 
-              value={stats.needsReview} 
-              color="yellow"
-              icon={<Eye className="w-8 h-8" />}
-              isActive={selectedFilter === 'needsReview'}
-              clickable={true}
-            />
-          </div>
-          <div onClick={() => handleFilterClick('failed')} className="cursor-pointer">
-            <StatCard 
-              title="Failed" 
-              value={stats.failed} 
-              color="red"
-              icon={<Shield className="w-8 h-8" />}
-              isActive={selectedFilter === 'failed'}
-              clickable={true}
-            />
-          </div>
-        </div>
-
-        {/* Recent Websites Table */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">Website Overview</h2>
-            <span className="text-sm text-gray-600">
-              Showing {filteredWebsites.length} of {websites.length} websites
+      {/* ── Search ── */}
+      <div className="mb-6">
+        <SearchBar
+          value={searchTerm}
+          onChange={setSearchTerm}
+          placeholder="Search websites by name or URL…"
+        />
+        {selectedFilter && (
+          <div className="mt-3 flex items-center gap-2">
+            <span className="text-xs text-green-100/40">Filtered by:</span>
+            <span className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-0.5 text-xs font-medium text-emerald-400">
+              {filterLabel[selectedFilter]}
             </span>
+            <button
+              onClick={() => setSelectedFilter(null)}
+              className="text-xs text-emerald-400/70 hover:text-emerald-400 transition-colors"
+            >
+              Clear
+            </button>
           </div>
+        )}
+      </div>
 
-          {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Website/System
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Security
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Functionality
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    SEO
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredWebsites.map((website) => (
-                  <tr
-                    key={website.id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <CompanyLogo
-                          website={website}
-                          className="h-12 w-12 rounded-lg object-cover border border-gray-200 bg-white shadow-sm"
-                        />
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">
-                            {website.name}
-                          </div>
-                          <div className="text-sm text-gray-500 flex items-center gap-2">
-                            {website.url}
-                            {website.url !== "URL Not Provided" && (
-                              <a
-                                href={website.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:text-blue-800"
-                              >
-                                <ExternalLink className="w-4 h-4" />
-                              </a>
-                            )}
-                          </div>
+      {/* ── Stat Cards ── */}
+      <div className="mb-8 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3">
+        <div onClick={() => setSelectedFilter(null)}>
+          <StatCard
+            title="Total"
+            value={stats.total}
+            color="blue"
+            icon={<Globe className="w-7 h-7" />}
+            isActive={selectedFilter === null}
+            clickable={false}
+          />
+        </div>
+        {[
+          { key: "audited", label: "Audited", val: stats.audited, color: "purple", Icon: CheckCircle },
+          { key: "pending", label: "Pending", val: stats.pending, color: "gray", Icon: FileText },
+          { key: "passed", label: "Passed", val: stats.passed, color: "green", Icon: CheckCircle },
+          { key: "needsReview", label: "Needs Review", val: stats.needsReview, color: "yellow", Icon: Eye },
+          { key: "failed", label: "Failed", val: stats.failed, color: "red", Icon: Shield },
+        ].map(({ key, label, val, color, Icon }) => (
+          <div
+            key={key}
+            onClick={() => handleFilterClick(key)}
+            className="cursor-pointer"
+          >
+            <StatCard
+              title={label}
+              value={val}
+              color={color}
+              icon={<Icon className="w-7 h-7" />}
+              isActive={selectedFilter === key}
+              clickable
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* ── Website Overview Table ── */}
+      <div className="glass-card glass-card-hover mb-8 overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-emerald-400/10">
+          <h2 className="text-sm font-semibold text-green-100/90 tracking-wide">
+            Website Overview
+          </h2>
+          <span className="text-xs text-green-100/40">
+            {filteredWebsites.length} of {websites.length} websites
+          </span>
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="min-w-full dark-table">
+            <thead>
+              <tr>
+                <th className="text-left">Website / System</th>
+                <th className="text-left">Status</th>
+                <th className="text-left">Security</th>
+                <th className="text-left">Functionality</th>
+                <th className="text-left">SEO</th>
+                <th className="text-left">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredWebsites.map((website) => (
+                <tr key={website.id}>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <CompanyLogo
+                        website={website}
+                        className="h-10 w-10 rounded-lg object-cover border border-emerald-400/15 bg-white/5 shadow-sm flex-shrink-0"
+                      />
+                      <div>
+                        <div className="font-medium text-green-50">{website.name}</div>
+                        <div className="flex items-center gap-1.5 text-xs text-green-100/40 mt-0.5">
+                          <span className="truncate max-w-[200px]">{website.url}</span>
+                          {website.url !== "URL Not Provided" && (
+                            <a
+                              href={website.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-emerald-400/60 hover:text-emerald-400 transition-colors"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusBadge status={website.status} />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusBadge status={website.securityCheck} />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusBadge status={website.functionalityTest} />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusBadge status={website.seo} />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <Link
-                        to={`/websites/${website.id}`}
-                        className="text-blue-600 hover:text-blue-900 font-medium"
-                      >
-                        View Details
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </div>
+                  </td>
+                  <td><StatusBadge status={website.status} /></td>
+                  <td><StatusBadge status={website.securityCheck} /></td>
+                  <td><StatusBadge status={website.functionalityTest} /></td>
+                  <td><StatusBadge status={website.seo} /></td>
+                  <td>
+                    <Link
+                      to={`/websites/${website.id}`}
+                      className="text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+                    >
+                      View Details →
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-          {/* Mobile Card View */}
-          <div className="md:hidden">
-            {filteredWebsites.map((website) => (
-              <div
-                key={website.id}
-                className="border-b border-gray-200 p-4 hover:bg-gray-50"
-              >
-                <div className="flex items-start mb-3 gap-3">
-                  <CompanyLogo
-                    website={website}
-                    className="h-14 w-14 rounded-lg object-cover border border-gray-200 bg-white shadow-sm flex-shrink-0"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900 mb-1">
-                      {website.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 break-all">
-                      {website.url}
-                    </p>
-                    {website.url !== "URL Not Provided" && (
-                      <a
-                        href={website.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1 mt-1"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        Open Website
-                      </a>
-                    )}
-                  </div>
+        {/* Mobile cards */}
+        <div className="md:hidden divide-y divide-emerald-400/10">
+          {filteredWebsites.map((website) => (
+            <div key={website.id} className="p-4">
+              <div className="flex items-start gap-3 mb-3">
+                <CompanyLogo
+                  website={website}
+                  className="h-12 w-12 rounded-lg object-cover border border-emerald-400/15 bg-white/5 shadow-sm flex-shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-green-50 truncate">{website.name}</h3>
+                  <p className="text-xs text-green-100/40 mt-0.5 truncate">{website.url}</p>
                 </div>
-
-                <div className="space-y-2 mb-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Status:</span>
-                    <StatusBadge status={website.status} />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Security:</span>
-                    <StatusBadge status={website.securityCheck} />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">
-                      Functionality:
-                    </span>
-                    <StatusBadge status={website.functionalityTest} />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">SEO:</span>
-                    <StatusBadge status={website.seo} />
-                  </div>
-                </div>
-
-                <Link
-                  to={`/websites/${website.id}`}
-                  className="block w-full text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  View Details
-                </Link>
               </div>
-            ))}
-          </div>
+              <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
+                {[
+                  ["Status", website.status],
+                  ["Security", website.securityCheck],
+                  ["Functionality", website.functionalityTest],
+                  ["SEO", website.seo],
+                ].map(([label, val]) => (
+                  <div key={label} className="flex items-center justify-between gap-2 rounded-lg bg-white/5 px-2 py-1.5 border border-emerald-400/10">
+                    <span className="text-green-100/40">{label}</span>
+                    <StatusBadge status={val} showIcon={false} />
+                  </div>
+                ))}
+              </div>
+              <Link
+                to={`/websites/${website.id}`}
+                className="block w-full text-center rounded-lg bg-emerald-400/10 border border-emerald-400/25 text-emerald-400 py-2 text-xs font-medium hover:bg-emerald-400/15 transition-colors"
+              >
+                View Details
+              </Link>
+            </div>
+          ))}
         </div>
+      </div>
 
-        {/* Quick Links */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ── Quick Links ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { to: "/websites", Icon: Globe, label: "All Websites", desc: "View and manage all websites", color: "blue" },
+          { to: "/security", Icon: Shield, label: "Security Audit", desc: "Check security compliance", color: "red" },
+          { to: "/seo", Icon: TrendingUp, label: "SEO Analysis", desc: "Optimize search rankings", color: "green" },
+          { to: "/reports", Icon: FileText, label: "Full Reports", desc: "Comprehensive audit reports", color: "purple" },
+        ].map(({ to, Icon, label, desc, color }) => (
           <Link
-            to="/websites"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200"
+            key={to}
+            to={to}
+            className="glass-card glass-card-hover p-5 flex items-start gap-4 group"
           >
-            <Globe className="w-8 h-8 text-blue-600 mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-1">All Websites</h3>
-            <p className="text-sm text-gray-600">
-              View and manage all websites
-            </p>
+            <div className={`rounded-lg p-2.5 mt-0.5 flex-shrink-0
+              ${color === "blue" ? "bg-blue-400/10 text-blue-400 group-hover:bg-blue-400/15" : ""}
+              ${color === "red" ? "bg-red-400/10 text-red-400 group-hover:bg-red-400/15" : ""}
+              ${color === "green" ? "bg-emerald-400/10 text-emerald-400 group-hover:bg-emerald-400/15" : ""}
+              ${color === "purple" ? "bg-violet-400/10 text-violet-400 group-hover:bg-violet-400/15" : ""}
+              transition-colors`}
+            >
+              <Icon className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-medium text-green-100/90 text-sm">{label}</h3>
+              <p className="text-xs text-green-100/40 mt-0.5">{desc}</p>
+            </div>
           </Link>
-
-          <Link
-            to="/security"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200"
-          >
-            <Shield className="w-8 h-8 text-red-600 mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-1">Security Audit</h3>
-            <p className="text-sm text-gray-600">Check security compliance</p>
-          </Link>
-
-          <Link
-            to="/seo"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200"
-          >
-            <TrendingUp className="w-8 h-8 text-green-600 mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-1">SEO Analysis</h3>
-            <p className="text-sm text-gray-600">Optimize search rankings</p>
-          </Link>
-
-          <Link
-            to="/reports"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200"
-          >
-            <FileText className="w-8 h-8 text-purple-600 mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-1">Full Reports</h3>
-            <p className="text-sm text-gray-600">Comprehensive audit reports</p>
-          </Link>
-        </div>
+        ))}
       </div>
     </div>
   );
