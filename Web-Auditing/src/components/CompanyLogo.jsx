@@ -177,7 +177,7 @@ const getLogoSource = (name) => {
 
 const CompanyLogo = ({
   website,
-  className = "h-12 w-12 rounded-lg border border-gray-200 bg-white p-1 shadow-sm",
+  className = "h-12 w-12 rounded-xl border border-white/15 bg-white p-1 shadow-sm flex items-center justify-center shrink-0",
 }) => {
   if (!website) {
     return null;

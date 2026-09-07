@@ -3,13 +3,96 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --bg-paddle: #0b1011;
+    --border-paddle: #202c2e;
+    --text-paddle: #f4f6f8;
+  }
+
   * {
-    @apply border-border;
+    border-color: #202c2e;
   }
+
   body {
-    @apply bg-gray-50 text-gray-900;
+    background-color: #0b1011;
+    color: #f4f6f8;
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    overflow-x: hidden;
   }
+}
+
+/* Paddle Ambient Background and Glows */
+.paddle-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.paddle-ambient-glow {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 420px;
+  background: radial-gradient(ellipse at 50% 20%, rgba(255, 248, 0, 0.07) 0%, rgba(56, 189, 248, 0.05) 50%, transparent 75%);
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.paddle-card {
+  position: relative;
+  background: rgba(14, 21, 22, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #202c2e;
+  border-radius: 16px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.paddle-card:hover {
+  border-color: #2f3e41;
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6), 0 0 20px -8px rgba(255, 248, 0, 0.08);
+}
+
+.paddle-card-glow {
+  position: relative;
+}
+
+.paddle-card-glow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 248, 0, 0.6) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.paddle-badge-gradient {
+  background: linear-gradient(90deg, #fff800, #fffecc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b1011;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #202c2e;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334447;
 }
 
 @media print {
@@ -17,11 +100,13 @@
     margin: 1cm;
   }
   
-  .print\\:hidden {
+  .print-hidden {
     display: none !important;
   }
   
   body {
     background: white;
+    color: black;
   }
 }
+

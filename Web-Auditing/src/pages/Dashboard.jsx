@@ -3,295 +3,471 @@ import { Link } from "react-router-dom";
 import {
   Globe,
   Shield,
-  CheckCircle,
-  Search as SearchIcon,
+  CheckCircle2,
   TrendingUp,
   FileText,
   ExternalLink,
   Eye,
+  Copy,
+  Check,
+  LayoutGrid,
+  List,
+  Sparkles,
+  ArrowUpRight,
+  Filter,
 } from "lucide-react";
 import StatCard from "../components/StatCard";
 import SearchBar from "../components/SearchBar";
 import StatusBadge from "../components/StatusBadge";
 import CompanyLogo from "../components/CompanyLogo";
-import {
-  getStatistics,
-  getCurrentQuarter,
-  filterWebsites,
-} from "../utils/helpers";
+import { getStatistics, getCurrentQuarter } from "../utils/helpers";
 
 const Dashboard = ({ websites }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState("ALL");
+  const [viewMode, setViewMode] = useState("table"); // 'table' | 'cards'
+  const [copiedId, setCopiedId] = useState(null);
+
   const stats = getStatistics(websites);
   const quarter = getCurrentQuarter();
 
-  const filteredWebsites = websites.filter(
-    (w) =>
+  const handleCopyUrl = (id, url, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!url || url === "URL Not Provided") return;
+    navigator.clipboard.writeText(url);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  // Filter websites based on search and selected stat card filter
+  const filteredWebsites = websites.filter((w) => {
+    const matchesSearch =
       w.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      w.url.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+      w.url.toLowerCase().includes(searchTerm.toLowerCase());
+
+    if (!matchesSearch) return false;
+
+    if (selectedStatusFilter === "ALL") return true;
+    if (selectedStatusFilter === "AUDITED") return Boolean(w.dateAudited);
+    if (selectedStatusFilter === "PENDING") return w.status === "Pending";
+    if (selectedStatusFilter === "PASSED") return w.status === "Passed";
+    if (selectedStatusFilter === "NEEDS_REVIEW") return w.status === "Needs Review";
+    if (selectedStatusFilter === "FAILED") return w.status === "Failed";
+
+    return true;
+  });
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
+    <div className="min-h-screen pt-16 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-3xl font-bold text-gray-900">
-              Website Audit & Maintenance
-            </h1>
-            <div className="text-sm font-medium text-gray-600 bg-white px-4 py-2 rounded-lg border border-gray-200">
-              {quarter}
+        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                Website Audit &amp; Maintenance
+              </h1>
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-[#fff800]/10 text-[#fff800] border border-[#fff800]/25">
+                <Sparkles className="w-3 h-3" />
+                Live Control
+              </span>
+            </div>
+            <p className="text-sm sm:text-base text-[#859496]">
+              Real-time monitoring, security assessments, and SEO performance metrics.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="text-xs font-semibold text-[#859496] bg-[#121a1b] px-4 py-2 rounded-xl border border-[#202c2e] flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Quarter: <strong className="text-white">{quarter}</strong></span>
             </div>
           </div>
-          <p className="text-gray-600">
-            Monitor, audit, and maintain company websites efficiently.
-          </p>
         </div>
 
-        {/* Search Bar */}
-        <div className="mb-8">
-          <SearchBar
-            value={searchTerm}
-            onChange={setSearchTerm}
-            placeholder="Search websites..."
-          />
-        </div>
-
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+        {/* Interactive Stat Cards Filter Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5 mb-8">
           <StatCard
-            title="Total Websites"
+            title="Total Sites"
             value={stats.total}
             color="blue"
-            icon={<Globe className="w-8 h-8" />}
+            icon={<Globe className="w-5 h-5" />}
+            active={selectedStatusFilter === "ALL"}
+            onClick={() =>
+              setSelectedStatusFilter(selectedStatusFilter === "ALL" ? "ALL" : "ALL")
+            }
           />
           <StatCard
             title="Audited"
             value={stats.audited}
             color="purple"
-            icon={<CheckCircle className="w-8 h-8" />}
+            icon={<CheckCircle2 className="w-5 h-5" />}
+            active={selectedStatusFilter === "AUDITED"}
+            onClick={() =>
+              setSelectedStatusFilter(
+                selectedStatusFilter === "AUDITED" ? "ALL" : "AUDITED"
+              )
+            }
           />
           <StatCard
             title="Pending"
             value={stats.pending}
             color="gray"
-            icon={<FileText className="w-8 h-8" />}
+            icon={<FileText className="w-5 h-5" />}
+            active={selectedStatusFilter === "PENDING"}
+            onClick={() =>
+              setSelectedStatusFilter(
+                selectedStatusFilter === "PENDING" ? "ALL" : "PENDING"
+              )
+            }
           />
           <StatCard
             title="Passed"
             value={stats.passed}
             color="green"
-            icon={<CheckCircle className="w-8 h-8" />}
+            icon={<CheckCircle2 className="w-5 h-5" />}
+            active={selectedStatusFilter === "PASSED"}
+            onClick={() =>
+              setSelectedStatusFilter(
+                selectedStatusFilter === "PASSED" ? "ALL" : "PASSED"
+              )
+            }
           />
           <StatCard
             title="Needs Review"
             value={stats.needsReview}
             color="yellow"
-            icon={<Eye className="w-8 h-8" />}
+            icon={<Eye className="w-5 h-5" />}
+            active={selectedStatusFilter === "NEEDS_REVIEW"}
+            onClick={() =>
+              setSelectedStatusFilter(
+                selectedStatusFilter === "NEEDS_REVIEW" ? "ALL" : "NEEDS_REVIEW"
+              )
+            }
           />
           <StatCard
             title="Failed"
             value={stats.failed}
             color="red"
-            icon={<Shield className="w-8 h-8" />}
+            icon={<Shield className="w-5 h-5" />}
+            active={selectedStatusFilter === "FAILED"}
+            onClick={() =>
+              setSelectedStatusFilter(
+                selectedStatusFilter === "FAILED" ? "ALL" : "FAILED"
+              )
+            }
           />
         </div>
 
-        {/* Recent Websites Table */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Website Overview
-            </h2>
+        {/* Search, Filter Tag & View Switcher */}
+        <div className="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="w-full sm:max-w-md">
+            <SearchBar
+              value={searchTerm}
+              onChange={setSearchTerm}
+              placeholder="Search website name, URL, or type..."
+            />
           </div>
 
-          {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Website/System
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Security
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Functionality
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    SEO
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredWebsites.map((website) => (
-                  <tr
-                    key={website.id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <CompanyLogo
-                          website={website}
-                          className="h-12 w-12 rounded-lg object-cover border border-gray-200 bg-white shadow-sm"
-                        />
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">
-                            {website.name}
-                          </div>
-                          <div className="text-sm text-gray-500 flex items-center gap-2">
-                            {website.url}
-                            {website.url !== "URL Not Provided" && (
-                              <a
-                                href={website.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:text-blue-800"
-                              >
-                                <ExternalLink className="w-4 h-4" />
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusBadge status={website.status} />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusBadge status={website.securityCheck} />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusBadge status={website.functionalityTest} />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusBadge status={website.seo} />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <Link
-                        to={`/websites/${website.id}`}
-                        className="text-blue-600 hover:text-blue-900 font-medium"
-                      >
-                        View Details
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile Card View */}
-          <div className="md:hidden">
-            {filteredWebsites.map((website) => (
-              <div
-                key={website.id}
-                className="border-b border-gray-200 p-4 hover:bg-gray-50"
+          <div className="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-3">
+            {selectedStatusFilter !== "ALL" && (
+              <button
+                onClick={() => setSelectedStatusFilter("ALL")}
+                className="inline-flex items-center gap-1.5 text-xs text-[#fff800] bg-[#fff800]/10 hover:bg-[#fff800]/20 border border-[#fff800]/30 px-3 py-1.5 rounded-xl transition-colors"
               >
-                <div className="flex items-start mb-3 gap-3">
-                  <CompanyLogo
-                    website={website}
-                    className="h-14 w-14 rounded-lg object-cover border border-gray-200 bg-white shadow-sm flex-shrink-0"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900 mb-1">
-                      {website.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 break-all">
-                      {website.url}
-                    </p>
-                    {website.url !== "URL Not Provided" && (
-                      <a
-                        href={website.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1 mt-1"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        Open Website
-                      </a>
-                    )}
-                  </div>
-                </div>
+                <Filter className="w-3 h-3" />
+                Filter: {selectedStatusFilter}
+                <span className="font-bold ml-1">&times;</span>
+              </button>
+            )}
 
-                <div className="space-y-2 mb-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Status:</span>
-                    <StatusBadge status={website.status} />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Security:</span>
-                    <StatusBadge status={website.securityCheck} />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">
-                      Functionality:
-                    </span>
-                    <StatusBadge status={website.functionalityTest} />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">SEO:</span>
-                    <StatusBadge status={website.seo} />
-                  </div>
-                </div>
-
-                <Link
-                  to={`/websites/${website.id}`}
-                  className="block w-full text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  View Details
-                </Link>
-              </div>
-            ))}
+            {/* Segmented View Switcher */}
+            <div className="inline-flex items-center rounded-xl bg-[#0e1516] border border-[#202c2e] p-1">
+              <button
+                type="button"
+                onClick={() => setViewMode("table")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  viewMode === "table"
+                    ? "bg-[#182325] text-white shadow-xs border border-[#2b3c3f]"
+                    : "text-[#859496] hover:text-white"
+                }`}
+              >
+                <List className="w-3.5 h-3.5" />
+                Table
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("cards")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  viewMode === "cards"
+                    ? "bg-[#182325] text-white shadow-xs border border-[#2b3c3f]"
+                    : "text-[#859496] hover:text-white"
+                }`}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                Cards
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Quick Links */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Website Overview Table / Card Container */}
+        <div className="relative rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] shadow-xl overflow-hidden backdrop-blur-md">
+          {/* Top highlight gradient line */}
+          <div className="absolute top-0 left-12 right-12 h-[1px] bg-gradient-to-r from-transparent via-[#fff800]/40 to-transparent pointer-events-none" />
+
+          <div className="px-6 py-4 border-b border-[#1c282a] flex items-center justify-between bg-[#12191b]/50">
+            <div>
+              <h2 className="text-lg font-bold text-white tracking-tight">
+                Website Overview
+              </h2>
+              <p className="text-xs text-[#859496]">
+                Showing {filteredWebsites.length} of {websites.length} systems
+              </p>
+            </div>
+
+            <Link
+              to="/websites"
+              className="text-xs font-semibold text-[#fff800] hover:text-[#fffa66] flex items-center gap-1 transition-colors"
+            >
+              Manage all <ArrowUpRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* Table View */}
+          {viewMode === "table" ? (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-[#1a2527]">
+                <thead className="bg-[#101719]">
+                  <tr>
+                    <th className="px-6 py-3.5 text-left text-xs font-semibold text-[#859496] uppercase tracking-wider">
+                      Website / System
+                    </th>
+                    <th className="px-6 py-3.5 text-left text-xs font-semibold text-[#859496] uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3.5 text-left text-xs font-semibold text-[#859496] uppercase tracking-wider">
+                      Security
+                    </th>
+                    <th className="px-6 py-3.5 text-left text-xs font-semibold text-[#859496] uppercase tracking-wider">
+                      Functionality
+                    </th>
+                    <th className="px-6 py-3.5 text-left text-xs font-semibold text-[#859496] uppercase tracking-wider">
+                      SEO
+                    </th>
+                    <th className="px-6 py-3.5 text-right text-xs font-semibold text-[#859496] uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#172224] bg-transparent">
+                  {filteredWebsites.map((website) => (
+                    <tr
+                      key={website.id}
+                      className="hover:bg-[#141d1f]/80 transition-colors group"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3.5">
+                          <CompanyLogo
+                            website={website}
+                            className="h-11 w-11 rounded-xl object-contain border border-white/10 bg-white p-1 shadow-sm shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <div className="text-sm font-semibold text-white group-hover:text-[#fff800] transition-colors truncate">
+                              {website.name}
+                            </div>
+                            <div className="text-xs text-[#859496] flex items-center gap-2 mt-0.5">
+                              <span className="truncate max-w-[200px] sm:max-w-xs">
+                                {website.url}
+                              </span>
+                              {website.url !== "URL Not Provided" && (
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                  <button
+                                    type="button"
+                                    onClick={(e) =>
+                                      handleCopyUrl(website.id, website.url, e)
+                                    }
+                                    title="Copy URL"
+                                    className="text-[#64748b] hover:text-[#fff800] transition-colors"
+                                  >
+                                    {copiedId === website.id ? (
+                                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                    ) : (
+                                      <Copy className="w-3.5 h-3.5" />
+                                    )}
+                                  </button>
+                                  <a
+                                    href={website.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[#64748b] hover:text-white transition-colors"
+                                    title="Open link"
+                                  >
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                  </a>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <StatusBadge status={website.status} />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <StatusBadge status={website.securityCheck} />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <StatusBadge status={website.functionalityTest} />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <StatusBadge status={website.seo} />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                        <Link
+                          to={`/websites/${website.id}`}
+                          className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg text-white bg-[#151f21] hover:bg-[#1d2a2d] border border-[#27373a] hover:border-[#384e52] transition-all"
+                        >
+                          View Details
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredWebsites.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-12 text-center text-[#859496]">
+                        No websites matched the selected filters.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            /* Cards View */
+            <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredWebsites.map((website) => (
+                <div
+                  key={website.id}
+                  className="rounded-xl bg-[#111819] border border-[#1f2c2e] p-5 hover:border-[#2e3f42] transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-start gap-3 mb-3">
+                      <CompanyLogo
+                        website={website}
+                        className="h-12 w-12 rounded-xl object-contain border border-white/10 bg-white p-1 shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-semibold text-white truncate">
+                          {website.name}
+                        </h3>
+                        <p className="text-xs text-[#859496] truncate">
+                          {website.url}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 my-4">
+                      <div className="rounded-lg bg-[#0e1415] p-2 border border-[#1b2527]">
+                        <span className="text-[10px] uppercase tracking-wider text-[#64748b] block mb-1">
+                          Status
+                        </span>
+                        <StatusBadge status={website.status} size="sm" />
+                      </div>
+                      <div className="rounded-lg bg-[#0e1415] p-2 border border-[#1b2527]">
+                        <span className="text-[10px] uppercase tracking-wider text-[#64748b] block mb-1">
+                          Security
+                        </span>
+                        <StatusBadge status={website.securityCheck} size="sm" />
+                      </div>
+                      <div className="rounded-lg bg-[#0e1415] p-2 border border-[#1b2527]">
+                        <span className="text-[10px] uppercase tracking-wider text-[#64748b] block mb-1">
+                          Function
+                        </span>
+                        <StatusBadge status={website.functionalityTest} size="sm" />
+                      </div>
+                      <div className="rounded-lg bg-[#0e1415] p-2 border border-[#1b2527]">
+                        <span className="text-[10px] uppercase tracking-wider text-[#64748b] block mb-1">
+                          SEO
+                        </span>
+                        <StatusBadge status={website.seo} size="sm" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Link
+                    to={`/websites/${website.id}`}
+                    className="w-full text-center text-xs font-semibold py-2 rounded-lg bg-[#182325] hover:bg-[#202e31] text-white border border-[#27373a] transition-all"
+                  >
+                    View Details
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Quick Links with Paddle aesthetic */}
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             to="/websites"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200"
+            className="group rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] hover:border-[#334649] p-6 transition-all duration-200 hover:-translate-y-0.5"
           >
-            <Globe className="w-8 h-8 text-blue-600 mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-1">All Websites</h3>
-            <p className="text-sm text-gray-600">
-              View and manage all websites
+            <div className="h-10 w-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+              <Globe className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-white group-hover:text-[#fff800] transition-colors mb-1 text-base">
+              All Websites
+            </h3>
+            <p className="text-xs text-[#859496]">
+              Browse catalog and view granular specs.
             </p>
           </Link>
 
           <Link
             to="/security"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200"
+            className="group rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] hover:border-[#334649] p-6 transition-all duration-200 hover:-translate-y-0.5"
           >
-            <Shield className="w-8 h-8 text-red-600 mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-1">Security Audit</h3>
-            <p className="text-sm text-gray-600">Check security compliance</p>
+            <div className="h-10 w-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+              <Shield className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-white group-hover:text-[#fff800] transition-colors mb-1 text-base">
+              Security Audit
+            </h3>
+            <p className="text-xs text-[#859496]">
+              Verify SSL, headers, and security checklists.
+            </p>
           </Link>
 
           <Link
             to="/seo"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200"
+            className="group rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] hover:border-[#334649] p-6 transition-all duration-200 hover:-translate-y-0.5"
           >
-            <TrendingUp className="w-8 h-8 text-green-600 mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-1">SEO Analysis</h3>
-            <p className="text-sm text-gray-600">Optimize search rankings</p>
+            <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+              <TrendingUp className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-white group-hover:text-[#fff800] transition-colors mb-1 text-base">
+              SEO Analysis
+            </h3>
+            <p className="text-xs text-[#859496]">
+              Audit rankings, meta tags, and indexing.
+            </p>
           </Link>
 
           <Link
             to="/reports"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200"
+            className="group rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] hover:border-[#334649] p-6 transition-all duration-200 hover:-translate-y-0.5"
           >
-            <FileText className="w-8 h-8 text-purple-600 mb-3" />
-            <h3 className="font-semibold text-gray-900 mb-1">Full Reports</h3>
-            <p className="text-sm text-gray-600">Comprehensive audit reports</p>
+            <div className="h-10 w-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+              <FileText className="w-5 h-5" />
+            </div>
+            <h3 className="font-bold text-white group-hover:text-[#fff800] transition-colors mb-1 text-base">
+              Full Reports
+            </h3>
+            <p className="text-xs text-[#859496]">
+              Comprehensive printable and exportable reports.
+            </p>
           </Link>
         </div>
       </div>
@@ -300,3 +476,4 @@ const Dashboard = ({ websites }) => {
 };
 
 export default Dashboard;
+

@@ -41,42 +41,49 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Navigation />
-        
-        <Routes>
-          <Route path="/" element={<Dashboard websites={websites} />} />
-          <Route 
-            path="/websites" 
-            element={<Websites websites={websites} onStartAudit={handleStartAudit} />} 
-          />
-          <Route 
-            path="/websites/:id" 
-            element={<WebsiteDetail websites={websites} onStartAudit={handleStartAudit} />} 
-          />
-          <Route path="/date-audited" element={<DateAudited websites={websites} />} />
-          <Route path="/status" element={<Status websites={websites} />} />
-          <Route path="/security" element={<Security websites={websites} />} />
-          <Route path="/functionality" element={<Functionality websites={websites} />} />
-          <Route path="/seo" element={<SEO websites={websites} />} />
-          <Route path="/remarks" element={<Remarks websites={websites} />} />
-          <Route path="/reports" element={<Reports websites={websites} />} />
-          <Route path="/reports/:id" element={<ReportDetail websites={websites} />} />
-        </Routes>
+      <div className="min-h-screen bg-[#0b1011] text-[#f4f6f8] relative selection:bg-[#fff800] selection:text-black">
+        {/* Ambient Glow and Subtle Grid Pattern */}
+        <div className="fixed inset-0 paddle-grid pointer-events-none opacity-30 z-0" />
+        <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[360px] bg-gradient-to-b from-[#fff800]/[0.06] via-sky-500/[0.04] to-transparent blur-3xl pointer-events-none z-0" />
 
-        {showAuditModal && (
-          <StartAuditModal
-            website={selectedWebsite}
-            onClose={() => {
-              setShowAuditModal(false);
-              setSelectedWebsite(null);
-            }}
-            onSave={handleSaveAudit}
-          />
-        )}
+        <div className="relative z-10">
+          <Navigation />
+          
+          <Routes>
+            <Route path="/" element={<Dashboard websites={websites} />} />
+            <Route 
+              path="/websites" 
+              element={<Websites websites={websites} onStartAudit={handleStartAudit} />} 
+            />
+            <Route 
+              path="/websites/:id" 
+              element={<WebsiteDetail websites={websites} onStartAudit={handleStartAudit} />} 
+            />
+            <Route path="/date-audited" element={<DateAudited websites={websites} />} />
+            <Route path="/status" element={<Status websites={websites} />} />
+            <Route path="/security" element={<Security websites={websites} />} />
+            <Route path="/functionality" element={<Functionality websites={websites} />} />
+            <Route path="/seo" element={<SEO websites={websites} />} />
+            <Route path="/remarks" element={<Remarks websites={websites} />} />
+            <Route path="/reports" element={<Reports websites={websites} />} />
+            <Route path="/reports/:id" element={<ReportDetail websites={websites} />} />
+          </Routes>
+
+          {showAuditModal && (
+            <StartAuditModal
+              website={selectedWebsite}
+              onClose={() => {
+                setShowAuditModal(false);
+                setSelectedWebsite(null);
+              }}
+              onSave={handleSaveAudit}
+            />
+          )}
+        </div>
       </div>
     </Router>
   );
 }
 
 export default App;
+

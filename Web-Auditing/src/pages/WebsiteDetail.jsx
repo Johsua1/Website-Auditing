@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import {
   ArrowLeft,
   ExternalLink,
   Shield,
-  CheckCircle,
+  CheckCircle2,
   TrendingUp,
   FileText,
   MessageSquare,
   Play,
+  Copy,
+  Check,
+  ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import StatusBadge from "../components/StatusBadge";
 import CompanyLogo from "../components/CompanyLogo";
@@ -21,27 +25,40 @@ import {
 
 const WebsiteDetail = ({ websites, onStartAudit }) => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
+  const [copied, setCopied] = useState(false);
+  const [expandedChecklistId, setExpandedChecklistId] = useState(null);
 
   const website = websites.find((w) => w.id === parseInt(id));
 
   if (!website) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-white rounded-lg shadow-md p-12 text-center">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Website Not Found
-            </h2>
-            <Link to="/websites" className="text-blue-600 hover:text-blue-800">
-              Back to Websites
-            </Link>
-          </div>
+      <div className="min-h-screen pt-16 pb-16 flex items-center justify-center">
+        <div className="rounded-2xl bg-[#0e1516] border border-[#202c2e] p-12 text-center max-w-md w-full shadow-2xl">
+          <h2 className="text-xl font-bold text-white mb-2">
+            Website Not Found
+          </h2>
+          <p className="text-xs text-[#859496] mb-6">
+            The requested website record does not exist or has been removed.
+          </p>
+          <Link
+            to="/websites"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#fff800] text-black text-xs font-bold hover:bg-[#fffa66] transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Directory
+          </Link>
         </div>
       </div>
     );
   }
+
+  const handleCopyUrl = () => {
+    if (!website.url || website.url === "URL Not Provided") return;
+    navigator.clipboard.writeText(website.url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const tabs = [
     {
@@ -49,13 +66,21 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
       name: "Overview",
       icon: <FileText className="w-4 h-4" />,
     },
-    { id: "security", name: "Security", icon: <Shield className="w-4 h-4" /> },
+    {
+      id: "security",
+      name: "Security",
+      icon: <Shield className="w-4 h-4" />,
+    },
     {
       id: "functionality",
       name: "Functionality",
-      icon: <CheckCircle className="w-4 h-4" />,
+      icon: <CheckCircle2 className="w-4 h-4" />,
     },
-    { id: "seo", name: "SEO", icon: <TrendingUp className="w-4 h-4" /> },
+    {
+      id: "seo",
+      name: "SEO",
+      icon: <TrendingUp className="w-4 h-4" />,
+    },
     {
       id: "remarks",
       name: "Remarks",
@@ -64,167 +89,209 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
+    <div className="min-h-screen pt-16 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
+        {/* Back Link */}
         <Link
           to="/websites"
-          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 mb-6 font-medium"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-[#859496] hover:text-[#fff800] mb-6 transition-colors group"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
           Back to Websites
         </Link>
 
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-start flex-1 gap-4">
+        {/* Website Header Card */}
+        <div className="relative rounded-2xl bg-[#0e1516]/95 border border-[#202c2e] p-6 sm:p-8 mb-8 shadow-2xl backdrop-blur-md">
+          {/* Subtle Yellow Gradient Line */}
+          <div className="absolute top-0 left-12 right-12 h-[1px] bg-gradient-to-r from-transparent via-[#fff800]/50 to-transparent pointer-events-none" />
+
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="flex items-start gap-4">
               <CompanyLogo
                 website={website}
-                className="h-20 w-20 rounded-xl object-cover border border-gray-200 bg-white shadow-sm flex-shrink-0"
+                className="h-20 w-20 rounded-2xl object-contain border border-white/10 bg-white p-2 shadow-md shrink-0"
               />
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {website.name}
-                </h1>
-                <div className="flex items-center gap-2 text-gray-600 mb-2">
-                  <span className="break-all">{website.url}</span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                    {website.name}
+                  </h1>
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#162224] text-[#fff800] border border-[#233538]">
+                    {website.type}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-[#859496] mb-3">
+                  <span className="font-mono text-[#cbd5e1]">{website.url}</span>
                   {website.url !== "URL Not Provided" && (
-                    <a
-                      href={website.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      <ExternalLink className="w-5 h-5" />
-                    </a>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={handleCopyUrl}
+                        className="text-[#64748b] hover:text-[#fff800] transition-colors p-1"
+                        title="Copy URL"
+                      >
+                        {copied ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                      <a
+                        href={website.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#64748b] hover:text-white transition-colors p-1"
+                        title="Open external URL"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
                   )}
                 </div>
-                <div className="text-sm text-gray-500">
-                  Type: <span className="font-medium">{website.type}</span> |
-                  Last Audit:{" "}
-                  <span className="font-medium">
+
+                <div className="text-xs text-[#859496]">
+                  Last Audit Date:{" "}
+                  <span className="text-white font-medium">
                     {formatDate(website.dateAudited)}
                   </span>
                 </div>
               </div>
             </div>
-            <button
-              onClick={() => onStartAudit(website)}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-            >
-              <Play className="w-4 h-4" />
-              Start Audit
-            </button>
+
+            <div className="flex items-center gap-3 self-start lg:self-center">
+              <button
+                onClick={() => onStartAudit(website)}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#fff800] hover:bg-[#fffa66] text-black text-sm font-bold shadow-[0_0_20px_rgba(255,248,0,0.25)] transition-all active:scale-[0.98]"
+              >
+                <Play className="w-4 h-4 fill-black" />
+                Start Audit
+              </button>
+            </div>
           </div>
 
-          {/* Status Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-            <div className="border border-gray-200 rounded-lg p-4">
-              <div className="text-sm text-gray-600 mb-2">Overall Status</div>
+          {/* Quick Metrics Bar */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-6 pt-6 border-t border-[#1b2628]">
+            <div className="rounded-xl bg-[#11191a] p-3.5 border border-[#1e2b2d]">
+              <span className="text-[11px] uppercase tracking-wider text-[#64748b] block mb-1">
+                Overall Status
+              </span>
               <StatusBadge status={website.status} />
             </div>
-            <div className="border border-gray-200 rounded-lg p-4">
-              <div className="text-sm text-gray-600 mb-2">Security</div>
+            <div className="rounded-xl bg-[#11191a] p-3.5 border border-[#1e2b2d]">
+              <span className="text-[11px] uppercase tracking-wider text-[#64748b] block mb-1">
+                Security Check
+              </span>
               <StatusBadge status={website.securityCheck} />
             </div>
-            <div className="border border-gray-200 rounded-lg p-4">
-              <div className="text-sm text-gray-600 mb-2">Functionality</div>
+            <div className="rounded-xl bg-[#11191a] p-3.5 border border-[#1e2b2d]">
+              <span className="text-[11px] uppercase tracking-wider text-[#64748b] block mb-1">
+                Functionality
+              </span>
               <StatusBadge status={website.functionalityTest} />
             </div>
-            <div className="border border-gray-200 rounded-lg p-4">
-              <div className="text-sm text-gray-600 mb-2">SEO</div>
+            <div className="rounded-xl bg-[#11191a] p-3.5 border border-[#1e2b2d]">
+              <span className="text-[11px] uppercase tracking-wider text-[#64748b] block mb-1">
+                SEO Audit
+              </span>
               <StatusBadge status={website.seo} />
             </div>
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="border-b border-gray-200">
-            <nav className="flex overflow-x-auto">
+        {/* Tab Navigation (Paddle Pill Tab Bar) */}
+        <div className="relative rounded-2xl bg-[#0e1516]/95 border border-[#202c2e] overflow-hidden shadow-xl backdrop-blur-md">
+          <div className="p-3 border-b border-[#1a2527] bg-[#11181a]/60">
+            <nav className="flex overflow-x-auto gap-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-150 ${
                     activeTab === tab.id
-                      ? "border-blue-600 text-blue-600"
-                      : "border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300"
+                      ? "bg-[#182325] text-white border border-[#2e3e42] shadow-xs"
+                      : "text-[#859496] hover:text-white hover:bg-[#141d1f] border border-transparent"
                   }`}
                 >
-                  {tab.icon}
+                  <span
+                    className={
+                      activeTab === tab.id ? "text-[#fff800]" : "text-[#64748b]"
+                    }
+                  >
+                    {tab.icon}
+                  </span>
                   {tab.name}
                 </button>
               ))}
             </nav>
           </div>
 
-          {/* Tab Content */}
-          <div className="p-6">
+          {/* Tab Content Panels */}
+          <div className="p-6 sm:p-8">
+            {/* ── OVERVIEW TAB ── */}
             {activeTab === "overview" && (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Website Information
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-[#859496] mb-4">
+                    Website Profile
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="border border-gray-200 rounded-lg p-4">
-                      <div className="text-sm text-gray-600 mb-1">Company</div>
-                      <div className="font-medium text-gray-900">
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <span className="text-xs text-[#64748b] block mb-1">
+                        Company Name
+                      </span>
+                      <span className="text-sm font-semibold text-white">
                         {website.name}
-                      </div>
+                      </span>
                     </div>
-                    <div className="border border-gray-200 rounded-lg p-4">
-                      <div className="text-sm text-gray-600 mb-1">Website</div>
-                      <div className="font-medium text-gray-900 break-all">
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <span className="text-xs text-[#64748b] block mb-1">
+                        Deployment URL
+                      </span>
+                      <span className="text-sm font-mono text-[#cbd5e1] break-all">
                         {website.url}
-                      </div>
+                      </span>
                     </div>
-                    <div className="border border-gray-200 rounded-lg p-4">
-                      <div className="text-sm text-gray-600 mb-1">Type</div>
-                      <div className="font-medium text-gray-900">
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <span className="text-xs text-[#64748b] block mb-1">
+                        Classification
+                      </span>
+                      <span className="text-sm font-semibold text-white">
                         {website.type}
-                      </div>
+                      </span>
                     </div>
-                    <div className="border border-gray-200 rounded-lg p-4">
-                      <div className="text-sm text-gray-600 mb-1">
-                        Audit Date
-                      </div>
-                      <div className="font-medium text-gray-900">
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <span className="text-xs text-[#64748b] block mb-1">
+                        Audit Timestamp
+                      </span>
+                      <span className="text-sm font-semibold text-white">
                         {formatDate(website.dateAudited)}
-                      </div>
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Audit Summary
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-[#859496] mb-4">
+                    Audit Performance Breakdown
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <div className="text-sm text-blue-700 mb-2">
-                        Overall Status
-                      </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <div className="text-xs text-[#859496] mb-2">Status</div>
                       <StatusBadge status={website.status} />
                     </div>
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                      <div className="text-sm text-red-700 mb-2">
-                        Security Check
-                      </div>
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <div className="text-xs text-[#859496] mb-2">Security</div>
                       <StatusBadge status={website.securityCheck} />
                     </div>
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                      <div className="text-sm text-green-700 mb-2">
-                        Functionality Test
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <div className="text-xs text-[#859496] mb-2">
+                        Functionality
                       </div>
                       <StatusBadge status={website.functionalityTest} />
                     </div>
-                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                      <div className="text-sm text-purple-700 mb-2">
-                        SEO Audit
-                      </div>
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <div className="text-xs text-[#859496] mb-2">SEO</div>
                       <StatusBadge status={website.seo} />
                     </div>
                   </div>
@@ -232,104 +299,192 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
               </div>
             )}
 
+            {/* ── SECURITY TAB ── */}
             {activeTab === "security" && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Security Checklist
-                </h3>
-                <div className="space-y-3">
-                  {securityChecklist.map((item) => (
-                    <div
-                      key={item.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">
-                          {item.name}
-                        </h4>
-                        <StatusBadge status={item.status} />
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-[#859496]">
+                      Security Checklist Verification
+                    </h3>
+                    <p className="text-xs text-[#64748b]">
+                      Click an item to toggle inspection details.
+                    </p>
+                  </div>
+                  <span className="text-xs text-[#fff800] bg-[#fff800]/10 px-2.5 py-1 rounded-full border border-[#fff800]/20 font-semibold">
+                    {securityChecklist.length} Items Checked
+                  </span>
+                </div>
+
+                <div className="space-y-2.5">
+                  {securityChecklist.map((item) => {
+                    const isExpanded = expandedChecklistId === `sec-${item.id}`;
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() =>
+                          setExpandedChecklistId(
+                            isExpanded ? null : `sec-${item.id}`
+                          )
+                        }
+                        className="rounded-xl bg-[#111819] border border-[#1e2b2d] hover:border-[#2d3e41] p-4 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <Shield className="w-4 h-4 text-[#fff800]" />
+                            <h4 className="text-sm font-semibold text-white">
+                              {item.name}
+                            </h4>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <StatusBadge status={item.status} size="sm" />
+                            <ChevronRight
+                              className={`w-4 h-4 text-[#64748b] transition-transform ${
+                                isExpanded ? "rotate-90" : ""
+                              }`}
+                            />
+                          </div>
+                        </div>
+                        {isExpanded && (
+                          <div className="mt-3 pt-3 border-t border-[#1a2527] text-xs text-[#859496] leading-relaxed">
+                            {item.description}
+                          </div>
+                        )}
                       </div>
-                      <p className="text-sm text-gray-600">
-                        {item.description}
-                      </p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
 
+            {/* ── FUNCTIONALITY TAB ── */}
             {activeTab === "functionality" && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Functionality Checklist
-                </h3>
-                <div className="space-y-3">
-                  {functionalityChecklist.map((item) => (
-                    <div
-                      key={item.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">
-                          {item.name}
-                        </h4>
-                        <StatusBadge status={item.status} />
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-[#859496]">
+                      Functionality &amp; UX Test Matrix
+                    </h3>
+                    <p className="text-xs text-[#64748b]">
+                      Click any test item to inspect verification criteria.
+                    </p>
+                  </div>
+                  <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 font-semibold">
+                    {functionalityChecklist.length} Tests
+                  </span>
+                </div>
+
+                <div className="space-y-2.5">
+                  {functionalityChecklist.map((item) => {
+                    const isExpanded = expandedChecklistId === `func-${item.id}`;
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() =>
+                          setExpandedChecklistId(
+                            isExpanded ? null : `func-${item.id}`
+                          )
+                        }
+                        className="rounded-xl bg-[#111819] border border-[#1e2b2d] hover:border-[#2d3e41] p-4 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                            <h4 className="text-sm font-semibold text-white">
+                              {item.name}
+                            </h4>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <StatusBadge status={item.status} size="sm" />
+                            <ChevronRight
+                              className={`w-4 h-4 text-[#64748b] transition-transform ${
+                                isExpanded ? "rotate-90" : ""
+                              }`}
+                            />
+                          </div>
+                        </div>
+                        {isExpanded && (
+                          <div className="mt-3 pt-3 border-t border-[#1a2527] text-xs text-[#859496] leading-relaxed">
+                            {item.description}
+                          </div>
+                        )}
                       </div>
-                      <p className="text-sm text-gray-600">
-                        {item.description}
-                      </p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
 
+            {/* ── SEO TAB ── */}
             {activeTab === "seo" && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  SEO Checklist
-                </h3>
-                <div className="mb-6 bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-                  <div className="text-sm text-gray-600 mb-2">SEO Score</div>
-                  <div className="text-3xl font-bold text-gray-900">
-                    Not Tested
+                <div className="mb-6 rounded-2xl bg-gradient-to-r from-[#121c1e] to-[#152326] border border-[#202e31] p-6 text-center">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#859496] block mb-1">
+                    Calculated SEO Score
+                  </span>
+                  <div className="text-3xl font-extrabold text-white">
+                    {website.seo || "Not Tested"}
                   </div>
                 </div>
-                <div className="space-y-3">
-                  {seoChecklist.map((item) => (
-                    <div
-                      key={item.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">
-                          {item.name}
-                        </h4>
-                        <StatusBadge status={item.status} />
+
+                <div className="space-y-2.5">
+                  {seoChecklist.map((item) => {
+                    const isExpanded = expandedChecklistId === `seo-${item.id}`;
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() =>
+                          setExpandedChecklistId(
+                            isExpanded ? null : `seo-${item.id}`
+                          )
+                        }
+                        className="rounded-xl bg-[#111819] border border-[#1e2b2d] hover:border-[#2d3e41] p-4 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <TrendingUp className="w-4 h-4 text-purple-400" />
+                            <h4 className="text-sm font-semibold text-white">
+                              {item.name}
+                            </h4>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <StatusBadge status={item.status} size="sm" />
+                            <ChevronRight
+                              className={`w-4 h-4 text-[#64748b] transition-transform ${
+                                isExpanded ? "rotate-90" : ""
+                              }`}
+                            />
+                          </div>
+                        </div>
+                        {isExpanded && (
+                          <div className="mt-3 pt-3 border-t border-[#1a2527] text-xs text-[#859496] leading-relaxed">
+                            {item.description}
+                          </div>
+                        )}
                       </div>
-                      <p className="text-sm text-gray-600">
-                        {item.description}
-                      </p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
 
+            {/* ── REMARKS TAB ── */}
             {activeTab === "remarks" && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Audit Remarks
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[#859496] mb-4">
+                  Audit Remarks &amp; Observations
                 </h3>
-                <div className="border border-gray-200 rounded-lg p-6">
-                  <div className="mb-4">
-                    <div className="text-sm text-gray-600 mb-1">Status</div>
+                <div className="rounded-2xl bg-[#111819] border border-[#1e2b2d] p-6">
+                  <div className="mb-4 flex items-center justify-between">
+                    <span className="text-xs text-[#859496]">Assessed Status:</span>
                     <StatusBadge status={website.status} />
                   </div>
-                  <div>
-                    <div className="text-sm text-gray-600 mb-2">Remarks</div>
-                    <p className="text-gray-900">{website.remarks}</p>
+                  <div className="text-xs text-[#64748b] uppercase tracking-wider mb-2 font-semibold">
+                    Auditor Notes:
                   </div>
+                  <p className="text-sm text-white/90 leading-relaxed bg-[#0c1314] p-4 rounded-xl border border-[#1a2527]">
+                    {website.remarks || "No specific remarks entered for this site."}
+                  </p>
                 </div>
               </div>
             )}
@@ -337,12 +492,14 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
         </div>
 
         {/* View Full Report Button */}
-        <div className="mt-6">
+        <div className="mt-8 flex justify-end">
           <Link
             to={`/reports/${website.id}`}
-            className="block w-full sm:w-auto text-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#162224] hover:bg-[#202e31] text-white text-sm font-bold border border-[#2a3c3f] hover:border-[#fff800]/50 transition-all shadow-md group"
           >
-            View Full Report
+            <FileText className="w-4 h-4 text-[#fff800]" />
+            Generate Comprehensive Audit Report
+            <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1 text-[#859496]" />
           </Link>
         </div>
       </div>
@@ -351,3 +508,4 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
 };
 
 export default WebsiteDetail;
+

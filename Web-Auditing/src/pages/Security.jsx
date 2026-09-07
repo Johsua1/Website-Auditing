@@ -1,11 +1,22 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Shield, Lock, AlertTriangle, CheckCircle } from "lucide-react";
+import {
+  Shield,
+  Lock,
+  AlertTriangle,
+  CheckCircle2,
+  ChevronRight,
+  ArrowUpRight,
+} from "lucide-react";
 import StatCard from "../components/StatCard";
 import StatusBadge from "../components/StatusBadge";
 import CompanyLogo from "../components/CompanyLogo";
 import { securityChecklist } from "../data/mockData";
 
 const Security = ({ websites }) => {
+  const [selectedFilter, setSelectedFilter] = useState("ALL");
+  const [expandedId, setExpandedId] = useState(null);
+
   const securityStats = {
     passed: websites.filter((w) => w.securityCheck === "Passed").length,
     warning: websites.filter((w) => w.securityCheck === "Warning").length,
@@ -13,111 +24,175 @@ const Security = ({ websites }) => {
     notTested: websites.filter((w) => w.securityCheck === "Not Tested").length,
   };
 
+  const filteredWebsites = websites.filter((w) => {
+    if (selectedFilter === "ALL") return true;
+    return w.securityCheck === selectedFilter;
+  });
+
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
+    <div className="min-h-screen pt-16 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Security Audit Overview
-          </h1>
-          <p className="text-gray-600">
-            Monitor security compliance and vulnerabilities across all websites
+          <div className="flex items-center gap-2 mb-2">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+              Security Audit Overview
+            </h1>
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-300 border border-rose-500/20">
+              Vulnerability &amp; SSL
+            </span>
+          </div>
+          <p className="text-sm sm:text-base text-[#859496]">
+            Inspect SSL certificates, security headers, authentication layers, and firewall integrity.
           </p>
         </div>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* Interactive Statistics Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-8">
           <StatCard
             title="Passed"
             value={securityStats.passed}
             color="green"
-            icon={<CheckCircle className="w-8 h-8" />}
+            icon={<CheckCircle2 className="w-5 h-5" />}
+            active={selectedFilter === "Passed"}
+            onClick={() =>
+              setSelectedFilter(selectedFilter === "Passed" ? "ALL" : "Passed")
+            }
           />
           <StatCard
             title="Warning"
             value={securityStats.warning}
             color="yellow"
-            icon={<AlertTriangle className="w-8 h-8" />}
+            icon={<AlertTriangle className="w-5 h-5" />}
+            active={selectedFilter === "Warning"}
+            onClick={() =>
+              setSelectedFilter(selectedFilter === "Warning" ? "ALL" : "Warning")
+            }
           />
           <StatCard
             title="Failed"
             value={securityStats.failed}
             color="red"
-            icon={<Shield className="w-8 h-8" />}
+            icon={<Shield className="w-5 h-5" />}
+            active={selectedFilter === "Failed"}
+            onClick={() =>
+              setSelectedFilter(selectedFilter === "Failed" ? "ALL" : "Failed")
+            }
           />
           <StatCard
             title="Not Tested"
             value={securityStats.notTested}
             color="gray"
-            icon={<Lock className="w-8 h-8" />}
+            icon={<Lock className="w-5 h-5" />}
+            active={selectedFilter === "Not Tested"}
+            onClick={() =>
+              setSelectedFilter(
+                selectedFilter === "Not Tested" ? "ALL" : "Not Tested"
+              )
+            }
           />
         </div>
 
         {/* Security Checklist Reference */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Security Checklist Items
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {securityChecklist.map((item) => (
-              <div
-                key={item.id}
-                className="border border-gray-200 rounded-lg p-4"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-medium text-gray-900">{item.name}</h3>
-                  <Shield className="w-5 h-5 text-gray-400" />
+        <div className="relative rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] p-6 mb-8 shadow-xl backdrop-blur-md">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-base font-bold text-white tracking-tight">
+              Security Checklist Reference
+            </h2>
+            <span className="text-xs text-[#859496]">
+              Click item to toggle inspection guidelines
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            {securityChecklist.map((item) => {
+              const isExpanded = expandedId === item.id;
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => setExpandedId(isExpanded ? null : item.id)}
+                  className="rounded-xl bg-[#111819] border border-[#1e2b2d] hover:border-[#2d3e41] p-4 transition-all cursor-pointer"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Shield className="w-4 h-4 text-[#fff800]" />
+                      <h3 className="text-sm font-semibold text-white">
+                        {item.name}
+                      </h3>
+                    </div>
+                    <ChevronRight
+                      className={`w-4 h-4 text-[#64748b] transition-transform ${
+                        isExpanded ? "rotate-90" : ""
+                      }`}
+                    />
+                  </div>
+                  <p className="text-xs text-[#859496] mt-2 leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
-                <p className="text-sm text-gray-600">{item.description}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* Websites Security Status */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Website Security Status
-            </h2>
+        <div className="relative rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] shadow-xl overflow-hidden backdrop-blur-md">
+          <div className="px-6 py-4 border-b border-[#1c282a] flex items-center justify-between bg-[#12191b]/50">
+            <div>
+              <h2 className="text-base font-bold text-white tracking-tight">
+                Website Security Assessments
+              </h2>
+              {selectedFilter !== "ALL" && (
+                <span className="text-xs text-[#fff800]">
+                  Filtered by: {selectedFilter}
+                </span>
+              )}
+            </div>
+            {selectedFilter !== "ALL" && (
+              <button
+                onClick={() => setSelectedFilter("ALL")}
+                className="text-xs font-semibold text-[#859496] hover:text-white"
+              >
+                Reset Filter
+              </button>
+            )}
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-[#1a2527]">
+              <thead className="bg-[#101719]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3.5 text-left text-xs font-semibold text-[#859496] uppercase tracking-wider">
                     Website
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3.5 text-left text-xs font-semibold text-[#859496] uppercase tracking-wider">
                     Security Result
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3.5 text-left text-xs font-semibold text-[#859496] uppercase tracking-wider">
                     Overall Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3.5 text-right text-xs font-semibold text-[#859496] uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {websites.map((website) => (
+              <tbody className="divide-y divide-[#172224]">
+                {filteredWebsites.map((website) => (
                   <tr
                     key={website.id}
-                    className="hover:bg-gray-50 transition-colors"
+                    className="hover:bg-[#141d1f]/80 transition-colors group"
                   >
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3.5">
                         <CompanyLogo
                           website={website}
-                          className="h-12 w-12 rounded-lg object-cover border border-gray-200 bg-white shadow-sm"
+                          className="h-11 w-11 rounded-xl object-contain border border-white/10 bg-white p-1 shrink-0 shadow-sm"
                         />
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold text-white group-hover:text-[#fff800] transition-colors truncate">
                             {website.name}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-xs text-[#859496] truncate">
                             {website.url}
                           </div>
                         </div>
@@ -129,12 +204,13 @@ const Security = ({ websites }) => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <StatusBadge status={website.status} showIcon={false} />
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                       <Link
                         to={`/websites/${website.id}`}
-                        className="text-blue-600 hover:text-blue-900 font-medium"
+                        className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg text-white bg-[#151f21] hover:bg-[#1d2a2d] border border-[#27373a] hover:border-[#384e52] transition-all"
                       >
-                        View Details
+                        Details
+                        <ArrowUpRight className="w-3.5 h-3.5" />
                       </Link>
                     </td>
                   </tr>
@@ -149,3 +225,4 @@ const Security = ({ websites }) => {
 };
 
 export default Security;
+

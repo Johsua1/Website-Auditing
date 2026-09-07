@@ -1,106 +1,189 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { MessageSquare } from "lucide-react";
+import {
+  MessageSquare,
+  Search,
+  Copy,
+  Check,
+  ArrowUpRight,
+  Sparkles,
+  Calendar,
+} from "lucide-react";
 import StatusBadge from "../components/StatusBadge";
 import CompanyLogo from "../components/CompanyLogo";
 import { formatDate } from "../utils/helpers";
 
 const Remarks = ({ websites }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [copiedId, setCopiedId] = useState(null);
+
+  const filteredWebsites = websites.filter((website) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      website.name.toLowerCase().includes(term) ||
+      website.url.toLowerCase().includes(term) ||
+      (website.remarks && website.remarks.toLowerCase().includes(term))
+    );
+  });
+
+  const handleCopyRemarks = (id, text) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
+    <div className="min-h-screen pt-16 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Audit Remarks & Findings
-          </h1>
-          <p className="text-gray-600">
-            View all audit remarks, findings, and recommendations for each
-            website
-          </p>
+        <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                Audit Remarks &amp; Findings
+              </h1>
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#fff800]/10 text-[#fff800] border border-[#fff800]/20">
+                {websites.length} Audits
+              </span>
+            </div>
+            <p className="text-sm sm:text-base text-[#859496]">
+              Detailed inspector remarks, auditor notes, and recommended remediations for each domain.
+            </p>
+          </div>
+
+          {/* Search Input */}
+          <div className="relative w-full md:w-80">
+            <Search className="w-4 h-4 text-[#859496] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search remarks or domain..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-[#111819] border border-[#202c2e] focus:border-[#fff800] text-sm text-white placeholder-[#859496] pl-10 pr-4 py-2.5 rounded-xl transition-all outline-none"
+            />
+          </div>
         </div>
 
         {/* Remarks List */}
-        <div className="space-y-6">
-          {websites.map((website) => (
-            <div
-              key={website.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden"
-            >
-              <div className="p-6">
-                {/* Website Header */}
-                <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-200">
-                  <div className="flex items-start flex-1 gap-4">
-                    <CompanyLogo
-                      website={website}
-                      className="h-16 w-16 rounded-lg object-cover border border-gray-200 bg-white shadow-sm flex-shrink-0"
-                    />
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-1">
-                        {website.name}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-2">
-                        {website.url}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        <div className="text-xs text-gray-500">
-                          Audit Date:{" "}
-                          <span className="font-medium">
-                            {formatDate(website.dateAudited)}
-                          </span>
+        {filteredWebsites.length === 0 ? (
+          <div className="rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] p-12 text-center shadow-xl">
+            <MessageSquare className="w-12 h-12 text-[#859496] mx-auto mb-3 opacity-40" />
+            <h3 className="text-base font-semibold text-white mb-1">
+              No matching remarks found
+            </h3>
+            <p className="text-xs text-[#859496]">
+              Try adjusting your search criteria.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredWebsites.map((website) => {
+              const isCopied = copiedId === website.id;
+              return (
+                <div
+                  key={website.id}
+                  className="relative rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] hover:border-[#2d3e41] shadow-xl overflow-hidden backdrop-blur-md transition-all group"
+                >
+                  <div className="p-6">
+                    {/* Website Header */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-5 border-b border-[#1b2628]">
+                      <div className="flex items-center gap-4">
+                        <CompanyLogo
+                          website={website}
+                          className="h-14 w-14 rounded-xl object-contain border border-white/10 bg-white p-1 shrink-0 shadow-sm"
+                        />
+                        <div className="min-w-0">
+                          <h3 className="text-lg font-bold text-white group-hover:text-[#fff800] transition-colors truncate">
+                            {website.name}
+                          </h3>
+                          <p className="text-xs text-[#859496] truncate">
+                            {website.url}
+                          </p>
+                          <div className="flex items-center gap-1.5 text-xs text-[#859496] mt-1.5">
+                            <Calendar className="w-3.5 h-3.5 text-[#fff800]" />
+                            <span>Audit Date: {formatDate(website.dateAudited)}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <Link
-                    to={`/websites/${website.id}`}
-                    className="text-blue-600 hover:text-blue-800 font-medium text-sm whitespace-nowrap ml-4"
-                  >
-                    View Details
-                  </Link>
-                </div>
 
-                {/* Status Summary */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-xs text-gray-600 mb-1">
-                      Overall Status
+                      <div className="flex items-center gap-2 self-start sm:self-center">
+                        <Link
+                          to={`/websites/${website.id}`}
+                          className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg text-white bg-[#151f21] hover:bg-[#1d2a2d] border border-[#27373a] hover:border-[#384e52] transition-all"
+                        >
+                          Details
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
                     </div>
-                    <StatusBadge status={website.status} />
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-xs text-gray-600 mb-1">Security</div>
-                    <StatusBadge status={website.securityCheck} />
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-xs text-gray-600 mb-1">
-                      Functionality
-                    </div>
-                    <StatusBadge status={website.functionalityTest} />
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-xs text-gray-600 mb-1">SEO</div>
-                    <StatusBadge status={website.seo} />
-                  </div>
-                </div>
 
-                {/* Remarks */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <MessageSquare className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <h4 className="font-medium text-blue-900 mb-2">
-                        Remarks
-                      </h4>
-                      <p className="text-gray-700 text-sm leading-relaxed">
+                    {/* Status Summary Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+                      <div className="bg-[#101719] border border-[#1b2628] rounded-xl p-3">
+                        <div className="text-[11px] font-semibold text-[#859496] uppercase tracking-wider mb-1.5">
+                          Overall Status
+                        </div>
+                        <StatusBadge status={website.status} />
+                      </div>
+                      <div className="bg-[#101719] border border-[#1b2628] rounded-xl p-3">
+                        <div className="text-[11px] font-semibold text-[#859496] uppercase tracking-wider mb-1.5">
+                          Security
+                        </div>
+                        <StatusBadge status={website.securityCheck} />
+                      </div>
+                      <div className="bg-[#101719] border border-[#1b2628] rounded-xl p-3">
+                        <div className="text-[11px] font-semibold text-[#859496] uppercase tracking-wider mb-1.5">
+                          Functionality
+                        </div>
+                        <StatusBadge status={website.functionalityTest} />
+                      </div>
+                      <div className="bg-[#101719] border border-[#1b2628] rounded-xl p-3">
+                        <div className="text-[11px] font-semibold text-[#859496] uppercase tracking-wider mb-1.5">
+                          SEO
+                        </div>
+                        <StatusBadge status={website.seo} />
+                      </div>
+                    </div>
+
+                    {/* Remarks Callout Box */}
+                    <div className="relative rounded-xl bg-[#11191b] border border-[#233235] p-4.5">
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <div className="flex items-center gap-2">
+                          <MessageSquare className="w-4 h-4 text-[#fff800] shrink-0" />
+                          <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                            Auditor Remarks
+                          </h4>
+                        </div>
+                        <button
+                          onClick={() =>
+                            handleCopyRemarks(website.id, website.remarks)
+                          }
+                          className="inline-flex items-center gap-1 text-xs text-[#859496] hover:text-[#fff800] transition-colors py-0.5 px-2 rounded-md hover:bg-[#192426]"
+                          title="Copy remark text"
+                        >
+                          {isCopied ? (
+                            <>
+                              <Check className="w-3.5 h-3.5 text-emerald-400" />
+                              <span className="text-emerald-400">Copied</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3.5 h-3.5" />
+                              <span>Copy</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <p className="text-sm text-[#ccd9da] leading-relaxed pl-6">
                         {website.remarks}
                       </p>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
