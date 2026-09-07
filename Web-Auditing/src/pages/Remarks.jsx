@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
-import { MessageSquare } from 'lucide-react';
-import StatusBadge from '../components/StatusBadge';
-import { formatDate } from '../utils/helpers';
+import { Link } from "react-router-dom";
+import { MessageSquare } from "lucide-react";
+import StatusBadge from "../components/StatusBadge";
+import CompanyLogo from "../components/CompanyLogo";
+import { formatDate } from "../utils/helpers";
 
 const Remarks = ({ websites }) => {
   return (
@@ -9,32 +10,43 @@ const Remarks = ({ websites }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Audit Remarks & Findings</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Audit Remarks & Findings
+          </h1>
           <p className="text-gray-600">
-            View all audit remarks, findings, and recommendations for each website
+            View all audit remarks, findings, and recommendations for each
+            website
           </p>
         </div>
 
         {/* Remarks List */}
         <div className="space-y-6">
           {websites.map((website) => (
-            <div key={website.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div
+              key={website.id}
+              className="bg-white rounded-lg shadow-md overflow-hidden"
+            >
               <div className="p-6">
                 {/* Website Header */}
                 <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-200">
-                  <div className="flex items-start flex-1">
-                    <div 
-                      className="w-1 h-16 rounded-full mr-4 flex-shrink-0" 
-                      style={{ backgroundColor: website.color }}
-                    ></div>
+                  <div className="flex items-start flex-1 gap-4">
+                    <CompanyLogo
+                      website={website}
+                      className="h-16 w-16 rounded-lg object-cover border border-gray-200 bg-white shadow-sm flex-shrink-0"
+                    />
                     <div className="flex-1">
                       <h3 className="text-xl font-semibold text-gray-900 mb-1">
                         {website.name}
                       </h3>
-                      <p className="text-sm text-gray-600 mb-2">{website.url}</p>
+                      <p className="text-sm text-gray-600 mb-2">
+                        {website.url}
+                      </p>
                       <div className="flex flex-wrap gap-2">
                         <div className="text-xs text-gray-500">
-                          Audit Date: <span className="font-medium">{formatDate(website.dateAudited)}</span>
+                          Audit Date:{" "}
+                          <span className="font-medium">
+                            {formatDate(website.dateAudited)}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -50,7 +62,9 @@ const Remarks = ({ websites }) => {
                 {/* Status Summary */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                   <div className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-xs text-gray-600 mb-1">Overall Status</div>
+                    <div className="text-xs text-gray-600 mb-1">
+                      Overall Status
+                    </div>
                     <StatusBadge status={website.status} />
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3">
@@ -58,7 +72,9 @@ const Remarks = ({ websites }) => {
                     <StatusBadge status={website.securityCheck} />
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-xs text-gray-600 mb-1">Functionality</div>
+                    <div className="text-xs text-gray-600 mb-1">
+                      Functionality
+                    </div>
                     <StatusBadge status={website.functionalityTest} />
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3">
@@ -72,7 +88,9 @@ const Remarks = ({ websites }) => {
                   <div className="flex items-start gap-3">
                     <MessageSquare className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                     <div className="flex-1">
-                      <h4 className="font-medium text-blue-900 mb-2">Remarks</h4>
+                      <h4 className="font-medium text-blue-900 mb-2">
+                        Remarks
+                      </h4>
                       <p className="text-gray-700 text-sm leading-relaxed">
                         {website.remarks}
                       </p>
