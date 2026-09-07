@@ -15,6 +15,7 @@ import {
   Sparkles,
   ArrowUpRight,
   Filter,
+  Play,
 } from "lucide-react";
 import StatCard from "../components/StatCard";
 import SearchBar from "../components/SearchBar";
@@ -22,7 +23,7 @@ import StatusBadge from "../components/StatusBadge";
 import CompanyLogo from "../components/CompanyLogo";
 import { getStatistics, getCurrentQuarter } from "../utils/helpers";
 
-const Dashboard = ({ websites }) => {
+const Dashboard = ({ websites, onStartAudit }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatusFilter, setSelectedStatusFilter] = useState("ALL");
   const [viewMode, setViewMode] = useState("table"); // 'table' | 'cards'
@@ -269,44 +270,56 @@ const Dashboard = ({ websites }) => {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3.5">
-                          <CompanyLogo
-                            website={website}
-                            className="h-11 w-11 rounded-xl object-contain border border-white/10 bg-white p-1 shadow-sm shrink-0"
-                          />
+                          <Link
+                            to={`/websites/${website.id}`}
+                            className="shrink-0 group/logo"
+                            title={`View details for ${website.name}`}
+                          >
+                            <CompanyLogo
+                              website={website}
+                              className="h-11 w-11 rounded-xl object-contain border border-white/10 bg-white p-1 shadow-sm transition-transform group-hover/logo:scale-105"
+                            />
+                          </Link>
                           <div className="min-w-0">
-                            <div className="text-sm font-semibold text-white group-hover:text-[#fff800] transition-colors truncate">
+                            <Link
+                              to={`/websites/${website.id}`}
+                              className="text-sm font-semibold text-white hover:text-[#fff800] transition-colors truncate block"
+                              title={`View details for ${website.name}`}
+                            >
                               {website.name}
-                            </div>
+                            </Link>
                             <div className="text-xs text-[#859496] flex items-center gap-2 mt-0.5">
-                              <span className="truncate max-w-[200px] sm:max-w-xs">
-                                {website.url}
-                              </span>
+                              {website.url !== "URL Not Provided" ? (
+                                <a
+                                  href={website.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="hover:underline text-[#859496] hover:text-[#fff800] transition-colors inline-flex items-center gap-1.5 truncate max-w-[200px] sm:max-w-xs"
+                                  title={`Open ${website.url}`}
+                                >
+                                  <span className="truncate">{website.url}</span>
+                                  <ExternalLink className="w-3.5 h-3.5 shrink-0 opacity-70" />
+                                </a>
+                              ) : (
+                                <span className="truncate max-w-[200px] sm:max-w-xs text-[#64748b]">
+                                  {website.url}
+                                </span>
+                              )}
                               {website.url !== "URL Not Provided" && (
-                                <div className="flex items-center gap-1.5 shrink-0">
-                                  <button
-                                    type="button"
-                                    onClick={(e) =>
-                                      handleCopyUrl(website.id, website.url, e)
-                                    }
-                                    title="Copy URL"
-                                    className="text-[#64748b] hover:text-[#fff800] transition-colors"
-                                  >
-                                    {copiedId === website.id ? (
-                                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                                    ) : (
-                                      <Copy className="w-3.5 h-3.5" />
-                                    )}
-                                  </button>
-                                  <a
-                                    href={website.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-[#64748b] hover:text-white transition-colors"
-                                    title="Open link"
-                                  >
-                                    <ExternalLink className="w-3.5 h-3.5" />
-                                  </a>
-                                </div>
+                                <button
+                                  type="button"
+                                  onClick={(e) =>
+                                    handleCopyUrl(website.id, website.url, e)
+                                  }
+                                  title="Copy URL"
+                                  className="text-[#64748b] hover:text-[#fff800] transition-colors p-0.5"
+                                >
+                                  {copiedId === website.id ? (
+                                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                  ) : (
+                                    <Copy className="w-3.5 h-3.5" />
+                                  )}
+                                </button>
                               )}
                             </div>
                           </div>
@@ -325,12 +338,25 @@ const Dashboard = ({ websites }) => {
                         <StatusBadge status={website.seo} />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                        <Link
-                          to={`/websites/${website.id}`}
-                          className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg text-white bg-[#151f21] hover:bg-[#1d2a2d] border border-[#27373a] hover:border-[#384e52] transition-all"
-                        >
-                          View Details
-                        </Link>
+                        <div className="flex items-center justify-end gap-2">
+                          {onStartAudit && (
+                            <button
+                              type="button"
+                              onClick={() => onStartAudit(website)}
+                              className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg text-black bg-[#fff800] hover:bg-[#ffe600] shadow-glow-yellow transition-all active:scale-95"
+                            >
+                              <Play className="w-3.5 h-3.5 fill-black" />
+                              Audit
+                            </button>
+                          )}
+                          <Link
+                            to={`/websites/${website.id}`}
+                            className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg text-white bg-[#151f21] hover:bg-[#1d2a2d] border border-[#27373a] hover:border-[#384e52] transition-all"
+                          >
+                            Details
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </Link>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -350,21 +376,41 @@ const Dashboard = ({ websites }) => {
               {filteredWebsites.map((website) => (
                 <div
                   key={website.id}
-                  className="rounded-xl bg-[#111819] border border-[#1f2c2e] p-5 hover:border-[#2e3f42] transition-all flex flex-col justify-between"
+                  className="rounded-xl bg-[#111819] border border-[#1f2c2e] p-5 hover:border-[#2e3f42] transition-all flex flex-col justify-between group"
                 >
                   <div>
                     <div className="flex items-start gap-3 mb-3">
-                      <CompanyLogo
-                        website={website}
-                        className="h-12 w-12 rounded-xl object-contain border border-white/10 bg-white p-1 shrink-0"
-                      />
+                      <Link
+                        to={`/websites/${website.id}`}
+                        className="shrink-0"
+                        title={`View details for ${website.name}`}
+                      >
+                        <CompanyLogo
+                          website={website}
+                          className="h-12 w-12 rounded-xl object-contain border border-white/10 bg-white p-1"
+                        />
+                      </Link>
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold text-white truncate">
+                        <Link
+                          to={`/websites/${website.id}`}
+                          className="font-semibold text-white hover:text-[#fff800] transition-colors truncate block text-sm"
+                        >
                           {website.name}
-                        </h3>
-                        <p className="text-xs text-[#859496] truncate">
-                          {website.url}
-                        </p>
+                        </Link>
+                        {website.url !== "URL Not Provided" ? (
+                          <a
+                            href={website.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-[#859496] hover:text-[#fff800] hover:underline transition-colors truncate block mt-0.5"
+                          >
+                            {website.url}
+                          </a>
+                        ) : (
+                          <p className="text-xs text-[#64748b] truncate mt-0.5">
+                            {website.url}
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -396,12 +442,25 @@ const Dashboard = ({ websites }) => {
                     </div>
                   </div>
 
-                  <Link
-                    to={`/websites/${website.id}`}
-                    className="w-full text-center text-xs font-semibold py-2 rounded-lg bg-[#182325] hover:bg-[#202e31] text-white border border-[#27373a] transition-all"
-                  >
-                    View Details
-                  </Link>
+                  <div className="flex items-center gap-2 pt-3 border-t border-[#1b2527]">
+                    {onStartAudit && (
+                      <button
+                        type="button"
+                        onClick={() => onStartAudit(website)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2 rounded-lg text-black bg-[#fff800] hover:bg-[#ffe600] shadow-glow-yellow transition-all active:scale-95"
+                      >
+                        <Play className="w-3.5 h-3.5 fill-black" />
+                        Audit
+                      </button>
+                    )}
+                    <Link
+                      to={`/websites/${website.id}`}
+                      className="flex-1 text-center text-xs font-semibold py-2 rounded-lg bg-[#182325] hover:bg-[#202e31] text-white border border-[#27373a] transition-all inline-flex items-center justify-center gap-1"
+                    >
+                      Details
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
                 </div>
               ))}
             </div>

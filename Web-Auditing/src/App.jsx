@@ -50,7 +50,7 @@ function App() {
           <Navigation />
           
           <Routes>
-            <Route path="/" element={<Dashboard websites={websites} />} />
+            <Route path="/" element={<Dashboard websites={websites} onStartAudit={handleStartAudit} />} />
             <Route 
               path="/websites" 
               element={<Websites websites={websites} onStartAudit={handleStartAudit} />} 

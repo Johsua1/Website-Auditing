@@ -26,6 +26,21 @@ const ReportDetail = ({ websites }) => {
   const website = websites.find((w) => w.id === parseInt(id));
   const [downloadToast, setDownloadToast] = useState(false);
 
+  const activeSecurityList =
+    website?.securityChecklist && website.securityChecklist.length > 0
+      ? website.securityChecklist
+      : securityChecklist;
+
+  const activeFunctionalityList =
+    website?.functionalityChecklist && website.functionalityChecklist.length > 0
+      ? website.functionalityChecklist
+      : functionalityChecklist;
+
+  const activeSeoList =
+    website?.seoChecklist && website.seoChecklist.length > 0
+      ? website.seoChecklist
+      : seoChecklist;
+
   if (!website) {
     return (
       <div className="min-h-screen pt-16 pb-16">
@@ -217,7 +232,7 @@ const ReportDetail = ({ websites }) => {
               </div>
 
               <div className="space-y-2.5">
-                {securityChecklist.map((item, index) => (
+                {activeSecurityList.map((item, index) => (
                   <div
                     key={item.id}
                     className="flex items-start justify-between gap-3 p-3.5 rounded-xl bg-[#11191b] border border-[#1b2729] print:bg-gray-50 print:border-gray-200"
@@ -258,7 +273,7 @@ const ReportDetail = ({ websites }) => {
               </div>
 
               <div className="space-y-2.5">
-                {functionalityChecklist.map((item, index) => (
+                {activeFunctionalityList.map((item, index) => (
                   <div
                     key={item.id}
                     className="flex items-start justify-between gap-3 p-3.5 rounded-xl bg-[#11191b] border border-[#1b2729] print:bg-gray-50 print:border-gray-200"
@@ -299,7 +314,7 @@ const ReportDetail = ({ websites }) => {
               </div>
 
               <div className="space-y-2.5">
-                {seoChecklist.map((item, index) => (
+                {activeSeoList.map((item, index) => (
                   <div
                     key={item.id}
                     className="flex items-start justify-between gap-3 p-3.5 rounded-xl bg-[#11191b] border border-[#1b2729] print:bg-gray-50 print:border-gray-200"

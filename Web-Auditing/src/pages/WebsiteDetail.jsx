@@ -60,6 +60,21 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const activeSecurityList =
+    website.securityChecklist && website.securityChecklist.length > 0
+      ? website.securityChecklist
+      : securityChecklist;
+
+  const activeFunctionalityList =
+    website.functionalityChecklist && website.functionalityChecklist.length > 0
+      ? website.functionalityChecklist
+      : functionalityChecklist;
+
+  const activeSeoList =
+    website.seoChecklist && website.seoChecklist.length > 0
+      ? website.seoChecklist
+      : seoChecklist;
+
   const tabs = [
     {
       id: "overview",
@@ -312,12 +327,12 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
                     </p>
                   </div>
                   <span className="text-xs text-[#fff800] bg-[#fff800]/10 px-2.5 py-1 rounded-full border border-[#fff800]/20 font-semibold">
-                    {securityChecklist.length} Items Checked
+                    {activeSecurityList.length} Items Checked
                   </span>
                 </div>
 
                 <div className="space-y-2.5">
-                  {securityChecklist.map((item) => {
+                  {activeSecurityList.map((item) => {
                     const isExpanded = expandedChecklistId === `sec-${item.id}`;
                     return (
                       <div
@@ -370,12 +385,12 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
                     </p>
                   </div>
                   <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 font-semibold">
-                    {functionalityChecklist.length} Tests
+                    {activeFunctionalityList.length} Tests
                   </span>
                 </div>
 
                 <div className="space-y-2.5">
-                  {functionalityChecklist.map((item) => {
+                  {activeFunctionalityList.map((item) => {
                     const isExpanded = expandedChecklistId === `func-${item.id}`;
                     return (
                       <div
@@ -428,7 +443,7 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
                 </div>
 
                 <div className="space-y-2.5">
-                  {seoChecklist.map((item) => {
+                  {activeSeoList.map((item) => {
                     const isExpanded = expandedChecklistId === `seo-${item.id}`;
                     return (
                       <div
