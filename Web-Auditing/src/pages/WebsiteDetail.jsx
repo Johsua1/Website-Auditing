@@ -4,11 +4,15 @@ import {
   ArrowLeft,
   ExternalLink,
   Shield,
-  CheckCircle,
+  CheckCircle2,
   TrendingUp,
   FileText,
   MessageSquare,
   Play,
+  Copy,
+  Check,
+  ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import StatusBadge from "../components/StatusBadge";
 import CompanyLogo from "../components/CompanyLogo";
@@ -22,33 +26,54 @@ import {
 const WebsiteDetail = ({ websites, onStartAudit }) => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("overview");
+  const [copied, setCopied] = useState(false);
+  const [expandedChecklistId, setExpandedChecklistId] = useState(null);
 
   const website = websites.find((w) => w.id === parseInt(id));
 
   if (!website) {
     return (
-      <div className="min-h-screen p-6 lg:p-8 flex items-center justify-center">
-        <div className="glass-card p-10 text-center max-w-md w-full">
-          <div className="w-12 h-12 rounded-full bg-red-400/10 border border-red-400/20 text-red-400 flex items-center justify-center mx-auto mb-4">
-            <Shield className="w-6 h-6" />
-          </div>
-          <h2 className="text-xl font-semibold text-green-50 mb-2">
+      <div className="min-h-screen pt-16 pb-16 flex items-center justify-center">
+        <div className="rounded-2xl bg-[#0e1516] border border-[#202c2e] p-12 text-center max-w-md w-full shadow-2xl">
+          <h2 className="text-xl font-bold text-white mb-2">
             Website Not Found
           </h2>
-          <p className="text-xs text-green-100/50 mb-6">
-            The requested website audit record could not be found or may have been removed.
+          <p className="text-xs text-[#859496] mb-6">
+            The requested website record does not exist or has been removed.
           </p>
           <Link
             to="/websites"
-            className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-medium bg-emerald-400/10 border border-emerald-400/25 text-emerald-400 hover:bg-emerald-400/15 transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#fff800] text-black text-xs font-bold hover:bg-[#fffa66] transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Back to Websites
+            <ArrowLeft className="w-4 h-4" />
+            Back to Directory
           </Link>
         </div>
       </div>
     );
   }
+
+  const handleCopyUrl = () => {
+    if (!website.url || website.url === "URL Not Provided") return;
+    navigator.clipboard.writeText(website.url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const activeSecurityList =
+    website.securityChecklist && website.securityChecklist.length > 0
+      ? website.securityChecklist
+      : securityChecklist;
+
+  const activeFunctionalityList =
+    website.functionalityChecklist && website.functionalityChecklist.length > 0
+      ? website.functionalityChecklist
+      : functionalityChecklist;
+
+  const activeSeoList =
+    website.seoChecklist && website.seoChecklist.length > 0
+      ? website.seoChecklist
+      : seoChecklist;
 
   const tabs = [
     {
@@ -64,7 +89,7 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
     {
       id: "functionality",
       name: "Functionality",
-      icon: <CheckCircle className="w-4 h-4" />,
+      icon: <CheckCircle2 className="w-4 h-4" />,
     },
     {
       id: "seo",
@@ -79,374 +104,423 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
   ];
 
   return (
-    <div className="min-h-screen p-6 lg:p-8">
-      {/* ── Back Navigation ── */}
-      <div className="mb-6">
+    <div className="min-h-screen pt-16 pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Back Link */}
         <Link
           to="/websites"
-          className="inline-flex items-center gap-2 text-xs font-medium text-emerald-400/70 hover:text-emerald-400 transition-colors group"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-[#859496] hover:text-[#fff800] mb-6 transition-colors group"
         >
-          <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
-          <span>Back to Websites</span>
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+          Back to Websites
         </Link>
-      </div>
 
-      {/* ── Main Company Header Card ── */}
-      <div className="glass-card glass-card-hover p-6 lg:p-8 mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
-          <div className="flex items-start gap-4 sm:gap-5 flex-1 min-w-0">
-            <CompanyLogo
-              website={website}
-              className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl object-cover border border-emerald-400/20 bg-white/5 shadow-md flex-shrink-0 p-1"
-            />
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2.5 mb-1.5">
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-green-50 truncate">
-                  {website.name}
-                </h1>
-                <span className="text-[10px] uppercase font-medium tracking-wider px-2 py-0.5 rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
-                  {website.type}
-                </span>
-              </div>
+        {/* Website Header Card */}
+        <div className="relative rounded-2xl bg-[#0e1516]/95 border border-[#202c2e] p-6 sm:p-8 mb-8 shadow-2xl backdrop-blur-md">
+          {/* Subtle Yellow Gradient Line */}
+          <div className="absolute top-0 left-12 right-12 h-[1px] bg-gradient-to-r from-transparent via-[#fff800]/50 to-transparent pointer-events-none" />
 
-              {/* URL */}
-              <div className="flex items-center gap-2 text-xs sm:text-sm text-green-100/50 mb-3">
-                <span className="truncate max-w-[280px] sm:max-w-md">{website.url}</span>
-                {website.url !== "URL Not Provided" && (
-                  <a
-                    href={website.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-emerald-400/70 hover:text-emerald-300 transition-colors inline-flex items-center flex-shrink-0"
-                    title="Visit website"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                )}
-              </div>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="flex items-start gap-4">
+              <CompanyLogo
+                website={website}
+                className="h-20 w-20 rounded-2xl object-contain border border-white/10 bg-white p-2 shadow-md shrink-0"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                    {website.name}
+                  </h1>
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#162224] text-[#fff800] border border-[#233538]">
+                    {website.type}
+                  </span>
+                </div>
 
-              {/* Meta details */}
-              <div className="flex flex-wrap items-center gap-2 text-xs text-green-100/40">
-                <span>
-                  Last Audit:{" "}
-                  <span className="text-green-100/70 font-medium">
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-[#859496] mb-3">
+                  <span className="font-mono text-[#cbd5e1]">{website.url}</span>
+                  {website.url !== "URL Not Provided" && (
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={handleCopyUrl}
+                        className="text-[#64748b] hover:text-[#fff800] transition-colors p-1"
+                        title="Copy URL"
+                      >
+                        {copied ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                      <a
+                        href={website.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#64748b] hover:text-white transition-colors p-1"
+                        title="Open external URL"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                <div className="text-xs text-[#859496]">
+                  Last Audit Date:{" "}
+                  <span className="text-white font-medium">
                     {formatDate(website.dateAudited)}
                   </span>
-                </span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Action button */}
-          <div className="flex sm:flex-col items-center gap-2.5 flex-shrink-0">
-            <button
-              onClick={() => onStartAudit(website)}
-              className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-400 text-black font-semibold text-xs tracking-wide hover:bg-emerald-300 transition-all shadow-lg shadow-emerald-400/20 active:scale-[0.98]"
-            >
-              <Play className="w-3.5 h-3.5 fill-black" />
-              <span>Start Audit</span>
-            </button>
-            <Link
-              to={`/reports/${website.id}`}
-              className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-medium bg-white/5 border border-emerald-400/15 text-green-100/70 hover:bg-white/10 hover:text-green-50 transition-colors"
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>Full Report</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Status Badges Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6 pt-6 border-t border-emerald-400/10">
-          {[
-            { label: "Overall Status", status: website.status },
-            { label: "Security", status: website.securityCheck },
-            { label: "Functionality", status: website.functionalityTest },
-            { label: "SEO", status: website.seo },
-          ].map(({ label, status }) => (
-            <div
-              key={label}
-              className="rounded-xl border border-emerald-400/10 p-3.5"
-              style={{ background: "rgba(255,255,255,0.02)" }}
-            >
-              <div className="text-[10px] uppercase tracking-wider text-green-100/40 font-medium mb-1.5">
-                {label}
-              </div>
-              <StatusBadge status={status} />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Tabbed Content Section ── */}
-      <div className="glass-card glass-card-hover overflow-hidden mb-6">
-        {/* Tab Navigation */}
-        <div className="border-b border-emerald-400/10 px-4 sm:px-6 bg-white/2">
-          <nav className="flex space-x-2 overflow-x-auto py-3">
-            {tabs.map((tab) => (
+            <div className="flex items-center gap-3 self-start lg:self-center">
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
-                  activeTab === tab.id
-                    ? "bg-emerald-400/15 border border-emerald-400/30 text-emerald-400 shadow-sm"
-                    : "border border-transparent text-green-100/50 hover:text-green-100 hover:bg-white/4"
-                }`}
+                onClick={() => onStartAudit(website)}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#fff800] hover:bg-[#fffa66] text-black text-sm font-bold shadow-[0_0_20px_rgba(255,248,0,0.25)] transition-all active:scale-[0.98]"
               >
-                {tab.icon}
-                <span>{tab.name}</span>
+                <Play className="w-4 h-4 fill-black" />
+                Start Audit
               </button>
-            ))}
-          </nav>
+            </div>
+          </div>
+
+          {/* Quick Metrics Bar */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-6 pt-6 border-t border-[#1b2628]">
+            <div className="rounded-xl bg-[#11191a] p-3.5 border border-[#1e2b2d]">
+              <span className="text-[11px] uppercase tracking-wider text-[#64748b] block mb-1">
+                Overall Status
+              </span>
+              <StatusBadge status={website.status} />
+            </div>
+            <div className="rounded-xl bg-[#11191a] p-3.5 border border-[#1e2b2d]">
+              <span className="text-[11px] uppercase tracking-wider text-[#64748b] block mb-1">
+                Security Check
+              </span>
+              <StatusBadge status={website.securityCheck} />
+            </div>
+            <div className="rounded-xl bg-[#11191a] p-3.5 border border-[#1e2b2d]">
+              <span className="text-[11px] uppercase tracking-wider text-[#64748b] block mb-1">
+                Functionality
+              </span>
+              <StatusBadge status={website.functionalityTest} />
+            </div>
+            <div className="rounded-xl bg-[#11191a] p-3.5 border border-[#1e2b2d]">
+              <span className="text-[11px] uppercase tracking-wider text-[#64748b] block mb-1">
+                SEO Audit
+              </span>
+              <StatusBadge status={website.seo} />
+            </div>
+          </div>
         </div>
 
-        {/* Tab Body */}
-        <div className="p-6 lg:p-8">
-          {/* OVERVIEW TAB */}
-          {activeTab === "overview" && (
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-sm font-semibold tracking-wide text-green-100/90 mb-4">
-                  Website Information
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <div
-                    className="rounded-xl border border-emerald-400/10 p-4"
-                    style={{ background: "rgba(255,255,255,0.02)" }}
+        {/* Tab Navigation (Paddle Pill Tab Bar) */}
+        <div className="relative rounded-2xl bg-[#0e1516]/95 border border-[#202c2e] overflow-hidden shadow-xl backdrop-blur-md">
+          <div className="p-3 border-b border-[#1a2527] bg-[#11181a]/60">
+            <nav className="flex overflow-x-auto gap-2">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-150 ${
+                    activeTab === tab.id
+                      ? "bg-[#182325] text-white border border-[#2e3e42] shadow-xs"
+                      : "text-[#859496] hover:text-white hover:bg-[#141d1f] border border-transparent"
+                  }`}
+                >
+                  <span
+                    className={
+                      activeTab === tab.id ? "text-[#fff800]" : "text-[#64748b]"
+                    }
                   >
-                    <div className="text-[10px] uppercase tracking-wider text-green-100/40 font-medium mb-1">
-                      Company
+                    {tab.icon}
+                  </span>
+                  {tab.name}
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          {/* Tab Content Panels */}
+          <div className="p-6 sm:p-8">
+            {/* ── OVERVIEW TAB ── */}
+            {activeTab === "overview" && (
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-[#859496] mb-4">
+                    Website Profile
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <span className="text-xs text-[#64748b] block mb-1">
+                        Company Name
+                      </span>
+                      <span className="text-sm font-semibold text-white">
+                        {website.name}
+                      </span>
                     </div>
-                    <div className="font-medium text-sm text-green-50">
-                      {website.name}
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <span className="text-xs text-[#64748b] block mb-1">
+                        Deployment URL
+                      </span>
+                      <span className="text-sm font-mono text-[#cbd5e1] break-all">
+                        {website.url}
+                      </span>
+                    </div>
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <span className="text-xs text-[#64748b] block mb-1">
+                        Classification
+                      </span>
+                      <span className="text-sm font-semibold text-white">
+                        {website.type}
+                      </span>
+                    </div>
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <span className="text-xs text-[#64748b] block mb-1">
+                        Audit Timestamp
+                      </span>
+                      <span className="text-sm font-semibold text-white">
+                        {formatDate(website.dateAudited)}
+                      </span>
                     </div>
                   </div>
-                  <div
-                    className="rounded-xl border border-emerald-400/10 p-4"
-                    style={{ background: "rgba(255,255,255,0.02)" }}
-                  >
-                    <div className="text-[10px] uppercase tracking-wider text-green-100/40 font-medium mb-1">
-                      Website URL
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-[#859496] mb-4">
+                    Audit Performance Breakdown
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <div className="text-xs text-[#859496] mb-2">Status</div>
+                      <StatusBadge status={website.status} />
                     </div>
-                    <div className="font-medium text-sm text-green-50 break-all">
-                      {website.url}
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <div className="text-xs text-[#859496] mb-2">Security</div>
+                      <StatusBadge status={website.securityCheck} />
                     </div>
-                  </div>
-                  <div
-                    className="rounded-xl border border-emerald-400/10 p-4"
-                    style={{ background: "rgba(255,255,255,0.02)" }}
-                  >
-                    <div className="text-[10px] uppercase tracking-wider text-green-100/40 font-medium mb-1">
-                      System Type
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <div className="text-xs text-[#859496] mb-2">
+                        Functionality
+                      </div>
+                      <StatusBadge status={website.functionalityTest} />
                     </div>
-                    <div className="font-medium text-sm text-green-50">
-                      {website.type}
-                    </div>
-                  </div>
-                  <div
-                    className="rounded-xl border border-emerald-400/10 p-4"
-                    style={{ background: "rgba(255,255,255,0.02)" }}
-                  >
-                    <div className="text-[10px] uppercase tracking-wider text-green-100/40 font-medium mb-1">
-                      Audit Date
-                    </div>
-                    <div className="font-medium text-sm text-green-50">
-                      {formatDate(website.dateAudited)}
+                    <div className="rounded-xl bg-[#111819] border border-[#1d2a2c] p-4">
+                      <div className="text-xs text-[#859496] mb-2">SEO</div>
+                      <StatusBadge status={website.seo} />
                     </div>
                   </div>
                 </div>
               </div>
+            )}
 
+            {/* ── SECURITY TAB ── */}
+            {activeTab === "security" && (
               <div>
-                <h3 className="text-sm font-semibold tracking-wide text-green-100/90 mb-4">
-                  Audit Summary
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-[#859496]">
+                      Security Checklist Verification
+                    </h3>
+                    <p className="text-xs text-[#64748b]">
+                      Click an item to toggle inspection details.
+                    </p>
+                  </div>
+                  <span className="text-xs text-[#fff800] bg-[#fff800]/10 px-2.5 py-1 rounded-full border border-[#fff800]/20 font-semibold">
+                    {activeSecurityList.length} Items Checked
+                  </span>
+                </div>
+
+                <div className="space-y-2.5">
+                  {activeSecurityList.map((item) => {
+                    const isExpanded = expandedChecklistId === `sec-${item.id}`;
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() =>
+                          setExpandedChecklistId(
+                            isExpanded ? null : `sec-${item.id}`
+                          )
+                        }
+                        className="rounded-xl bg-[#111819] border border-[#1e2b2d] hover:border-[#2d3e41] p-4 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <Shield className="w-4 h-4 text-[#fff800]" />
+                            <h4 className="text-sm font-semibold text-white">
+                              {item.name}
+                            </h4>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <StatusBadge status={item.status} size="sm" />
+                            <ChevronRight
+                              className={`w-4 h-4 text-[#64748b] transition-transform ${
+                                isExpanded ? "rotate-90" : ""
+                              }`}
+                            />
+                          </div>
+                        </div>
+                        {isExpanded && (
+                          <div className="mt-3 pt-3 border-t border-[#1a2527] text-xs text-[#859496] leading-relaxed">
+                            {item.description}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ── FUNCTIONALITY TAB ── */}
+            {activeTab === "functionality" && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-[#859496]">
+                      Functionality &amp; UX Test Matrix
+                    </h3>
+                    <p className="text-xs text-[#64748b]">
+                      Click any test item to inspect verification criteria.
+                    </p>
+                  </div>
+                  <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 font-semibold">
+                    {activeFunctionalityList.length} Tests
+                  </span>
+                </div>
+
+                <div className="space-y-2.5">
+                  {activeFunctionalityList.map((item) => {
+                    const isExpanded = expandedChecklistId === `func-${item.id}`;
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() =>
+                          setExpandedChecklistId(
+                            isExpanded ? null : `func-${item.id}`
+                          )
+                        }
+                        className="rounded-xl bg-[#111819] border border-[#1e2b2d] hover:border-[#2d3e41] p-4 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                            <h4 className="text-sm font-semibold text-white">
+                              {item.name}
+                            </h4>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <StatusBadge status={item.status} size="sm" />
+                            <ChevronRight
+                              className={`w-4 h-4 text-[#64748b] transition-transform ${
+                                isExpanded ? "rotate-90" : ""
+                              }`}
+                            />
+                          </div>
+                        </div>
+                        {isExpanded && (
+                          <div className="mt-3 pt-3 border-t border-[#1a2527] text-xs text-[#859496] leading-relaxed">
+                            {item.description}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ── SEO TAB ── */}
+            {activeTab === "seo" && (
+              <div>
+                <div className="mb-6 rounded-2xl bg-gradient-to-r from-[#121c1e] to-[#152326] border border-[#202e31] p-6 text-center">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#859496] block mb-1">
+                    Calculated SEO Score
+                  </span>
+                  <div className="text-3xl font-extrabold text-white">
+                    {website.seo || "Not Tested"}
+                  </div>
+                </div>
+
+                <div className="space-y-2.5">
+                  {activeSeoList.map((item) => {
+                    const isExpanded = expandedChecklistId === `seo-${item.id}`;
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() =>
+                          setExpandedChecklistId(
+                            isExpanded ? null : `seo-${item.id}`
+                          )
+                        }
+                        className="rounded-xl bg-[#111819] border border-[#1e2b2d] hover:border-[#2d3e41] p-4 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <TrendingUp className="w-4 h-4 text-purple-400" />
+                            <h4 className="text-sm font-semibold text-white">
+                              {item.name}
+                            </h4>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <StatusBadge status={item.status} size="sm" />
+                            <ChevronRight
+                              className={`w-4 h-4 text-[#64748b] transition-transform ${
+                                isExpanded ? "rotate-90" : ""
+                              }`}
+                            />
+                          </div>
+                        </div>
+                        {isExpanded && (
+                          <div className="mt-3 pt-3 border-t border-[#1a2527] text-xs text-[#859496] leading-relaxed">
+                            {item.description}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ── REMARKS TAB ── */}
+            {activeTab === "remarks" && (
+              <div>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[#859496] mb-4">
+                  Audit Remarks &amp; Observations
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-                  <div className="rounded-xl bg-blue-400/5 border border-blue-400/20 p-4">
-                    <div className="text-[11px] font-medium text-blue-300/80 uppercase tracking-wider mb-2">
-                      Overall Status
-                    </div>
+                <div className="rounded-2xl bg-[#111819] border border-[#1e2b2d] p-6">
+                  <div className="mb-4 flex items-center justify-between">
+                    <span className="text-xs text-[#859496]">Assessed Status:</span>
                     <StatusBadge status={website.status} />
                   </div>
-                  <div className="rounded-xl bg-red-400/5 border border-red-400/20 p-4">
-                    <div className="text-[11px] font-medium text-red-300/80 uppercase tracking-wider mb-2">
-                      Security Check
-                    </div>
-                    <StatusBadge status={website.securityCheck} />
+                  <div className="text-xs text-[#64748b] uppercase tracking-wider mb-2 font-semibold">
+                    Auditor Notes:
                   </div>
-                  <div className="rounded-xl bg-emerald-400/5 border border-emerald-400/20 p-4">
-                    <div className="text-[11px] font-medium text-emerald-300/80 uppercase tracking-wider mb-2">
-                      Functionality Test
-                    </div>
-                    <StatusBadge status={website.functionalityTest} />
-                  </div>
-                  <div className="rounded-xl bg-violet-400/5 border border-violet-400/20 p-4">
-                    <div className="text-[11px] font-medium text-violet-300/80 uppercase tracking-wider mb-2">
-                      SEO Audit
-                    </div>
-                    <StatusBadge status={website.seo} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* SECURITY TAB */}
-          {activeTab === "security" && (
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold tracking-wide text-green-100/90">
-                  Security Checklist
-                </h3>
-                <span className="text-xs text-green-100/40">
-                  {securityChecklist.length} criteria evaluated
-                </span>
-              </div>
-              <div className="space-y-3">
-                {securityChecklist.map((item) => (
-                  <div
-                    key={item.id}
-                    className="rounded-xl border border-emerald-400/10 p-4 hover:border-emerald-400/25 transition-colors"
-                    style={{ background: "rgba(255,255,255,0.02)" }}
-                  >
-                    <div className="flex items-center justify-between gap-4 mb-1.5">
-                      <h4 className="font-medium text-sm text-green-50">
-                        {item.name}
-                      </h4>
-                      <StatusBadge status={item.status} />
-                    </div>
-                    <p className="text-xs text-green-100/50 leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* FUNCTIONALITY TAB */}
-          {activeTab === "functionality" && (
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold tracking-wide text-green-100/90">
-                  Functionality Checklist
-                </h3>
-                <span className="text-xs text-green-100/40">
-                  {functionalityChecklist.length} tests performed
-                </span>
-              </div>
-              <div className="space-y-3">
-                {functionalityChecklist.map((item) => (
-                  <div
-                    key={item.id}
-                    className="rounded-xl border border-emerald-400/10 p-4 hover:border-emerald-400/25 transition-colors"
-                    style={{ background: "rgba(255,255,255,0.02)" }}
-                  >
-                    <div className="flex items-center justify-between gap-4 mb-1.5">
-                      <h4 className="font-medium text-sm text-green-50">
-                        {item.name}
-                      </h4>
-                      <StatusBadge status={item.status} />
-                    </div>
-                    <p className="text-xs text-green-100/50 leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* SEO TAB */}
-          {activeTab === "seo" && (
-            <div>
-              <h3 className="text-sm font-semibold tracking-wide text-green-100/90 mb-4">
-                SEO Checklist
-              </h3>
-              <div
-                className="mb-6 rounded-xl border border-emerald-400/15 p-6 text-center"
-                style={{ background: "rgba(255,255,255,0.02)" }}
-              >
-                <div className="text-xs uppercase tracking-wider text-green-100/40 font-medium mb-1">
-                  SEO Audit Status
-                </div>
-                <div className="text-3xl font-bold text-green-50">
-                  {website.seo}
-                </div>
-              </div>
-              <div className="space-y-3">
-                {seoChecklist.map((item) => (
-                  <div
-                    key={item.id}
-                    className="rounded-xl border border-emerald-400/10 p-4 hover:border-emerald-400/25 transition-colors"
-                    style={{ background: "rgba(255,255,255,0.02)" }}
-                  >
-                    <div className="flex items-center justify-between gap-4 mb-1.5">
-                      <h4 className="font-medium text-sm text-green-50">
-                        {item.name}
-                      </h4>
-                      <StatusBadge status={item.status} />
-                    </div>
-                    <p className="text-xs text-green-100/50 leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* REMARKS TAB */}
-          {activeTab === "remarks" && (
-            <div>
-              <h3 className="text-sm font-semibold tracking-wide text-green-100/90 mb-4">
-                Audit Remarks & Observations
-              </h3>
-              <div
-                className="rounded-xl border border-emerald-400/10 p-6"
-                style={{ background: "rgba(255,255,255,0.02)" }}
-              >
-                <div className="flex items-center gap-3 mb-4 pb-4 border-b border-emerald-400/10">
-                  <div className="text-xs text-green-100/40">Status:</div>
-                  <StatusBadge status={website.status} />
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-green-100/40 font-medium mb-2">
-                    Remarks
-                  </div>
-                  <p className="text-sm text-green-100/80 leading-relaxed">
-                    {website.remarks || "No remarks recorded for this website."}
+                  <p className="text-sm text-white/90 leading-relaxed bg-[#0c1314] p-4 rounded-xl border border-[#1a2527]">
+                    {website.remarks || "No specific remarks entered for this site."}
                   </p>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* ── Bottom Action Links ── */}
-      <div className="flex flex-wrap items-center gap-3">
-        <Link
-          to={`/reports/${website.id}`}
-          className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-xs font-semibold
-            bg-emerald-400/15 border border-emerald-400/30 text-emerald-400
-            hover:bg-emerald-400/25 hover:border-emerald-400/40 transition-all shadow-sm"
-        >
-          <FileText className="w-4 h-4" />
-          View Full Audit Report
-        </Link>
-        <button
-          onClick={() => onStartAudit(website)}
-          className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-xs font-medium
-            bg-white/5 border border-emerald-400/15 text-green-100/70
-            hover:bg-white/10 hover:text-green-50 transition-colors"
-        >
-          <Play className="w-3.5 h-3.5" />
-          Re-Audit Website
-        </button>
+        {/* View Full Report Button */}
+        <div className="mt-8 flex justify-end">
+          <Link
+            to={`/reports/${website.id}`}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#162224] hover:bg-[#202e31] text-white text-sm font-bold border border-[#2a3c3f] hover:border-[#fff800]/50 transition-all shadow-md group"
+          >
+            <FileText className="w-4 h-4 text-[#fff800]" />
+            Generate Comprehensive Audit Report
+            <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1 text-[#859496]" />
+          </Link>
+        </div>
       </div>
     </div>
   );
 };
 
 export default WebsiteDetail;
+

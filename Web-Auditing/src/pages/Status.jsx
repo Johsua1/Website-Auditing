@@ -1,99 +1,225 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircle, AlertCircle, XCircle, Clock, Loader } from "lucide-react";
+import {
+  CheckCircle2,
+  AlertCircle,
+  XCircle,
+  Clock,
+  Loader,
+  ArrowUpRight,
+} from "lucide-react";
 import StatCard from "../components/StatCard";
 import StatusBadge from "../components/StatusBadge";
 import CompanyLogo from "../components/CompanyLogo";
 import { getStatistics } from "../utils/helpers";
 
-const STATUS_CONFIG = {
-  Passed: { color: "green", Icon: CheckCircle },
-  "Needs Review": { color: "yellow", Icon: AlertCircle },
-  Failed: { color: "red", Icon: XCircle },
-  Pending: { color: "gray", Icon: Clock },
-  "In Progress": { color: "blue", Icon: Loader },
-};
-
 const Status = ({ websites }) => {
+  const [activeGroup, setActiveGroup] = useState("ALL");
   const stats = getStatistics(websites);
 
-  const statusGroups = Object.fromEntries(
-    Object.keys(STATUS_CONFIG).map((s) => [s, websites.filter((w) => w.status === s)])
-  );
+  const statusGroups = {
+    Passed: websites.filter((w) => w.status === "Passed"),
+    "Needs Review": websites.filter((w) => w.status === "Needs Review"),
+    Failed: websites.filter((w) => w.status === "Failed"),
+    Pending: websites.filter((w) => w.status === "Pending"),
+    "In Progress": websites.filter((w) => w.status === "In Progress"),
+  };
+
+  const displayedGroups =
+    activeGroup === "ALL"
+      ? statusGroups
+      : { [activeGroup]: statusGroups[activeGroup] || [] };
 
   return (
-    <div className="min-h-screen p-6 lg:p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-green-50">Website Status</h1>
-        <p className="mt-1 text-sm text-green-100/50">View all websites organised by their current audit status.</p>
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
-        <StatCard title="Passed" value={stats.passed} color="green" icon={<CheckCircle className="w-7 h-7" />} />
-        <StatCard title="Needs Review" value={stats.needsReview} color="yellow" icon={<AlertCircle className="w-7 h-7" />} />
-        <StatCard title="Failed" value={stats.failed} color="red" icon={<XCircle className="w-7 h-7" />} />
-        <StatCard title="Pending" value={stats.pending} color="gray" icon={<Clock className="w-7 h-7" />} />
-        <StatCard
-          title="In Progress"
-          value={websites.filter((w) => w.status === "In Progress").length}
-          color="blue"
-          icon={<Loader className="w-7 h-7" />}
-        />
-      </div>
-
-      <div className="space-y-5">
-        {Object.entries(statusGroups).map(([status, list]) => (
-          <div key={status} className="glass-card overflow-hidden">
-            <div className="flex items-center gap-3 px-6 py-4 border-b border-emerald-400/10" style={{ background: "rgba(255,255,255,0.02)" }}>
-              <h2 className="text-sm font-semibold text-green-100/80 tracking-wide">{status}</h2>
-              <span className="rounded-full px-2.5 py-0.5 text-xs font-medium bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
-                {list.length}
-              </span>
-            </div>
-
-            {list.length > 0 ? (
-              <div className="divide-y divide-emerald-400/8">
-                {list.map((website) => (
-                  <div key={website.id} className="flex items-center justify-between px-6 py-4 hover:bg-white/2 transition-colors" style={{}}>
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <CompanyLogo website={website} className="h-10 w-10 rounded-lg border border-emerald-400/15 bg-white/5 flex-shrink-0" />
-                      <div className="min-w-0">
-                        <h3 className="text-sm font-medium text-green-50 truncate">{website.name}</h3>
-                        <p className="text-xs text-green-100/40 mt-0.5 truncate">{website.url}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 ml-4 flex-shrink-0">
-                      <div className="hidden md:flex gap-4">
-                        {[
-                          ["Security", website.securityCheck],
-                          ["Function", website.functionalityTest],
-                          ["SEO", website.seo],
-                        ].map(([label, val]) => (
-                          <div key={label} className="text-center">
-                            <div className="text-[10px] text-green-100/35 mb-1 uppercase tracking-wider">{label}</div>
-                            <StatusBadge status={val} showIcon={false} />
-                          </div>
-                        ))}
-                      </div>
-                      <Link
-                        to={`/websites/${website.id}`}
-                        className="text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors whitespace-nowrap"
-                      >
-                        View →
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="px-6 py-8 text-center text-xs text-green-100/30">
-                No websites with status: {status}
-              </div>
-            )}
+    <div className="min-h-screen pt-16 pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-2">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+              Website Status Overview
+            </h1>
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#fff800]/10 text-[#fff800] border border-[#fff800]/20">
+              Health Status
+            </span>
           </div>
-        ))}
+          <p className="text-sm sm:text-base text-[#859496]">
+            Comprehensive breakdown of corporate websites grouped by audit verification state.
+          </p>
+        </div>
+
+        {/* Interactive Statistics Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 mb-8">
+          <StatCard
+            title="Passed"
+            value={stats.passed}
+            color="green"
+            icon={<CheckCircle2 className="w-5 h-5" />}
+            active={activeGroup === "Passed"}
+            onClick={() =>
+              setActiveGroup(activeGroup === "Passed" ? "ALL" : "Passed")
+            }
+          />
+          <StatCard
+            title="Needs Review"
+            value={stats.needsReview}
+            color="yellow"
+            icon={<AlertCircle className="w-5 h-5" />}
+            active={activeGroup === "Needs Review"}
+            onClick={() =>
+              setActiveGroup(
+                activeGroup === "Needs Review" ? "ALL" : "Needs Review"
+              )
+            }
+          />
+          <StatCard
+            title="Failed"
+            value={stats.failed}
+            color="red"
+            icon={<XCircle className="w-5 h-5" />}
+            active={activeGroup === "Failed"}
+            onClick={() =>
+              setActiveGroup(activeGroup === "Failed" ? "ALL" : "Failed")
+            }
+          />
+          <StatCard
+            title="Pending"
+            value={stats.pending}
+            color="gray"
+            icon={<Clock className="w-5 h-5" />}
+            active={activeGroup === "Pending"}
+            onClick={() =>
+              setActiveGroup(activeGroup === "Pending" ? "ALL" : "Pending")
+            }
+          />
+          <StatCard
+            title="In Progress"
+            value={websites.filter((w) => w.status === "In Progress").length}
+            color="blue"
+            icon={<Loader className="w-5 h-5" />}
+            active={activeGroup === "In Progress"}
+            onClick={() =>
+              setActiveGroup(
+                activeGroup === "In Progress" ? "ALL" : "In Progress"
+              )
+            }
+          />
+        </div>
+
+        {activeGroup !== "ALL" && (
+          <div className="mb-6 flex items-center justify-between">
+            <span className="text-xs text-[#859496]">
+              Filtering by status:{" "}
+              <strong className="text-white">{activeGroup}</strong>
+            </span>
+            <button
+              onClick={() => setActiveGroup("ALL")}
+              className="text-xs font-semibold text-[#fff800] hover:text-[#fffa66] bg-[#fff800]/10 px-3 py-1.5 rounded-lg border border-[#fff800]/25 transition-colors"
+            >
+              Show All Status Groups
+            </button>
+          </div>
+        )}
+
+        {/* Status Groups */}
+        <div className="space-y-6">
+          {Object.entries(displayedGroups).map(([status, websiteList]) => (
+            <div
+              key={status}
+              className="relative rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] shadow-xl overflow-hidden backdrop-blur-md"
+            >
+              <div className="px-6 py-4 border-b border-[#1c282a] flex items-center justify-between bg-[#12191b]/60">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-base font-bold text-white tracking-tight">
+                    {status}
+                  </h2>
+                  <span className="bg-[#182325] text-[#859496] px-2.5 py-0.5 rounded-full text-xs font-semibold border border-[#243437]">
+                    {websiteList.length}
+                  </span>
+                </div>
+              </div>
+
+              {websiteList.length > 0 ? (
+                <div className="divide-y divide-[#172224]">
+                  {websiteList.map((website) => (
+                    <div
+                      key={website.id}
+                      className="px-6 py-4 hover:bg-[#141d1f]/80 transition-colors group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center flex-1 gap-3.5 min-w-0">
+                          <CompanyLogo
+                            website={website}
+                            className="h-11 w-11 rounded-xl object-contain border border-white/10 bg-white p-1 shrink-0 shadow-sm"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <h3 className="text-sm font-semibold text-white group-hover:text-[#fff800] transition-colors truncate">
+                              {website.name}
+                            </h3>
+                            <p className="text-xs text-[#859496] truncate">
+                              {website.url}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-6 ml-4">
+                          <div className="hidden sm:flex items-center gap-3">
+                            <div className="text-center">
+                              <div className="text-[10px] text-[#64748b] uppercase tracking-wider mb-1">
+                                Security
+                              </div>
+                              <StatusBadge
+                                status={website.securityCheck}
+                                showIcon={false}
+                                size="sm"
+                              />
+                            </div>
+                            <div className="text-center">
+                              <div className="text-[10px] text-[#64748b] uppercase tracking-wider mb-1">
+                                Function
+                              </div>
+                              <StatusBadge
+                                status={website.functionalityTest}
+                                showIcon={false}
+                                size="sm"
+                              />
+                            </div>
+                            <div className="text-center">
+                              <div className="text-[10px] text-[#64748b] uppercase tracking-wider mb-1">
+                                SEO
+                              </div>
+                              <StatusBadge
+                                status={website.seo}
+                                showIcon={false}
+                                size="sm"
+                              />
+                            </div>
+                          </div>
+
+                          <Link
+                            to={`/websites/${website.id}`}
+                            className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg text-white bg-[#151f21] hover:bg-[#1d2a2d] border border-[#27373a] hover:border-[#384e52] transition-all whitespace-nowrap"
+                          >
+                            Details
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="px-6 py-8 text-center text-xs text-[#859496]">
+                  No websites found currently marked with status: {status}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
 export default Status;
+

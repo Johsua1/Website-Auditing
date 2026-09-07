@@ -4,7 +4,7 @@ export const websites = [
   {
     id: 1,
     name: "Connector",
-    url: "URL Not Provided",
+    url: "https://connectorcore.com/Connector-Website-master",
     type: "Website",
     dateAudited: null,
     status: "Pending",
@@ -34,7 +34,7 @@ export const websites = [
   {
     id: 3,
     name: "Klassic Solutions Inc.",
-    url: "URL Not Provided",
+    url: "https://connectorcore.com/Klassic-Solutions-PH-master/",
     type: "Website",
     dateAudited: null,
     status: "Pending",
@@ -49,7 +49,7 @@ export const websites = [
   {
     id: 4,
     name: "Klassic Marketing Inc.",
-    url: "URL Not Provided",
+    url: "https://connectorcore.com/Klassic-Marketing-Inc-Website-master/",
     type: "Website",
     dateAudited: null,
     status: "Pending",
@@ -64,7 +64,7 @@ export const websites = [
   {
     id: 5,
     name: "Westwood Development Corporation",
-    url: "URL Not Provided",
+    url: "https://connectorcore.com/Westwood-Development-Corp-Website-master/",
     type: "Website",
     dateAudited: null,
     status: "Pending",
@@ -79,7 +79,7 @@ export const websites = [
   {
     id: 6,
     name: "Westwood Law Firm",
-    url: "URL Not Provided",
+    url: "https://connectorcore.com/Westwood-Law-Firm-Website-master/",
     type: "Website",
     dateAudited: null,
     status: "Pending",
@@ -94,7 +94,7 @@ export const websites = [
   {
     id: 7,
     name: "The Green Oasis",
-    url: "URL Not Provided",
+    url: "https://connectorcore.com/The-Green-Oasis-Website-master/",
     type: "Website",
     dateAudited: null,
     status: "Pending",
@@ -109,7 +109,7 @@ export const websites = [
   {
     id: 8,
     name: "The Luxurious Cleaning Co.",
-    url: "URL Not Provided",
+    url: "https://connectorcore.com/Luxurious-Cleaning-Website-master/",
     type: "Website",
     dateAudited: null,
     status: "Pending",
@@ -124,7 +124,7 @@ export const websites = [
   {
     id: 9,
     name: "HYT Foundation Inc.",
-    url: "URL Not Provided",
+    url: "https://connectorcore.com/HYT-Foundation-Inc-Website-master/",
     type: "Website",
     dateAudited: null,
     status: "Pending",
@@ -139,7 +139,7 @@ export const websites = [
   {
     id: 10,
     name: "The Finest Fit",
-    url: "URL Not Provided",
+    url: "https://connectorcore.com/The-Finest-Fit-Website-master/",
     type: "Website",
     dateAudited: null,
     status: "Pending",
@@ -154,7 +154,7 @@ export const websites = [
   {
     id: 11,
     name: "KLASSIC GROUP OF COMPANIES",
-    url: "URL Not Provided",
+    url: "https://connectorcore.com/",
     type: "Website",
     dateAudited: null,
     status: "Pending",

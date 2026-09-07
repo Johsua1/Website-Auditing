@@ -1,72 +1,109 @@
-const colorConfig = {
-  blue: {
-    base: "border-blue-400/20 bg-blue-400/5 text-blue-300",
-    active: "border-blue-400/40 bg-blue-400/15 text-blue-200",
-    icon: "text-blue-400/50",
-    iconActive: "text-blue-300",
-  },
-  green: {
-    base: "border-emerald-400/20 bg-emerald-400/5 text-emerald-300",
-    active: "border-emerald-400/40 bg-emerald-400/15 text-emerald-200",
-    icon: "text-emerald-400/50",
-    iconActive: "text-emerald-300",
-  },
-  yellow: {
-    base: "border-yellow-400/20 bg-yellow-400/5 text-yellow-300",
-    active: "border-yellow-400/40 bg-yellow-400/15 text-yellow-200",
-    icon: "text-yellow-400/50",
-    iconActive: "text-yellow-300",
-  },
-  red: {
-    base: "border-red-400/20 bg-red-400/5 text-red-300",
-    active: "border-red-400/40 bg-red-400/15 text-red-200",
-    icon: "text-red-400/50",
-    iconActive: "text-red-300",
-  },
-  gray: {
-    base: "border-slate-500/20 bg-slate-500/5 text-slate-400",
-    active: "border-slate-400/40 bg-slate-400/15 text-slate-200",
-    icon: "text-slate-500/50",
-    iconActive: "text-slate-300",
-  },
-  purple: {
-    base: "border-violet-400/20 bg-violet-400/5 text-violet-300",
-    active: "border-violet-400/40 bg-violet-400/15 text-violet-200",
-    icon: "text-violet-400/50",
-    iconActive: "text-violet-300",
-  },
-};
-
 const StatCard = ({
   title,
   value,
   color = "blue",
   icon,
-  isActive = false,
-  clickable = true,
+  onClick,
+  active = false,
+  subtitle,
 }) => {
-  const cfg = colorConfig[color] ?? colorConfig.blue;
-  const classes = isActive ? cfg.active : cfg.base;
-  const iconClass = isActive ? cfg.iconActive : cfg.icon;
+  const colorMap = {
+    blue: {
+      accent: "#38bdf8",
+      glow: "rgba(56, 189, 248, 0.15)",
+      borderTop: "linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.8), transparent)",
+      text: "text-sky-400",
+      bgPill: "bg-sky-500/10 text-sky-300 border-sky-500/20",
+    },
+    green: {
+      accent: "#34d399",
+      glow: "rgba(52, 211, 153, 0.15)",
+      borderTop: "linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.8), transparent)",
+      text: "text-emerald-400",
+      bgPill: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
+    },
+    yellow: {
+      accent: "#fff800",
+      glow: "rgba(255, 248, 0, 0.18)",
+      borderTop: "linear-gradient(90deg, transparent, rgba(255, 248, 0, 0.9), transparent)",
+      text: "text-[#fff800]",
+      bgPill: "bg-yellow-500/10 text-yellow-300 border-yellow-500/20",
+    },
+    red: {
+      accent: "#f87171",
+      glow: "rgba(248, 113, 113, 0.15)",
+      borderTop: "linear-gradient(90deg, transparent, rgba(248, 113, 113, 0.8), transparent)",
+      text: "text-rose-400",
+      bgPill: "bg-rose-500/10 text-rose-300 border-rose-500/20",
+    },
+    gray: {
+      accent: "#94a3b8",
+      glow: "rgba(148, 163, 184, 0.15)",
+      borderTop: "linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.6), transparent)",
+      text: "text-slate-400",
+      bgPill: "bg-slate-500/10 text-slate-300 border-slate-500/20",
+    },
+    purple: {
+      accent: "#c084fc",
+      glow: "rgba(192, 132, 252, 0.15)",
+      borderTop: "linear-gradient(90deg, transparent, rgba(192, 132, 252, 0.8), transparent)",
+      text: "text-purple-400",
+      bgPill: "bg-purple-500/10 text-purple-300 border-purple-500/20",
+    },
+  };
+
+  const scheme = colorMap[color] || colorMap.blue;
 
   return (
     <div
-      className={`glass-card rounded-xl border-2 p-5 transition-all duration-200
-        ${classes}
-        ${clickable ? "cursor-pointer hover:scale-[1.03] hover:shadow-lg" : ""}
-      `}
+      onClick={onClick}
+      className={`relative overflow-hidden rounded-2xl bg-[#0e1516]/90 backdrop-blur-md border transition-all duration-200 p-5 select-none ${
+        onClick ? "cursor-pointer hover:-translate-y-1 hover:shadow-xl active:scale-[0.98]" : ""
+      } ${
+        active
+          ? "border-[#fff800] ring-1 ring-[#fff800]/50 shadow-[0_0_25px_rgba(255,248,0,0.15)] bg-[#121c1e]"
+          : "border-[#202c2e] hover:border-[#324447] hover:bg-[#11191a]"
+      }`}
     >
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wider opacity-70 mb-1">
+      {/* Top Gradient Highlight Line */}
+      <div
+        className="absolute top-0 left-[10%] right-[10%] h-[1.5px] pointer-events-none"
+        style={{ background: scheme.borderTop }}
+      />
+
+      <div className="flex items-start justify-between">
+        <div className="space-y-1">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#859496]">
             {title}
           </p>
-          <p className="text-3xl font-bold tracking-tight">{value}</p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-bold tracking-tight text-white">
+              {value}
+            </span>
+            {subtitle && (
+              <span className="text-xs text-[#64748b]">{subtitle}</span>
+            )}
+          </div>
         </div>
-        {icon && <div className={`${iconClass} transition-colors`}>{icon}</div>}
+
+        {icon && (
+          <div
+            className={`flex h-11 w-11 items-center justify-center rounded-xl border border-white/5 bg-white/[0.03] ${scheme.text} transition-transform group-hover:scale-110`}
+          >
+            {icon}
+          </div>
+        )}
       </div>
+
+      {onClick && (
+        <div className="mt-3 flex items-center justify-between text-[11px] text-[#6b7c7e] border-t border-[#182325] pt-2">
+          <span>{active ? "Filtered" : "Click to filter"}</span>
+          <span className={`h-1.5 w-1.5 rounded-full ${active ? "bg-[#fff800] animate-pulse" : "bg-[#2d3d40]"}`} />
+        </div>
+      )}
     </div>
   );
 };
 
 export default StatCard;
+

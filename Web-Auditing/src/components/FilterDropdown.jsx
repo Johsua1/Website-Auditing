@@ -1,26 +1,32 @@
-const FilterDropdown = ({ label, value, onChange, options }) => (
-  <div>
-    <label className="block text-xs font-medium uppercase tracking-wider text-green-100/40 mb-1.5">
-      {label}
-    </label>
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="block w-full px-3 py-2.5 rounded-lg text-sm
-        bg-white/5 border border-emerald-400/15
-        text-green-100/80
-        focus:outline-none focus:ring-1 focus:ring-emerald-400/40 focus:border-emerald-400/40
-        transition-colors appearance-none cursor-pointer"
-      style={{ colorScheme: "dark" }}
-    >
-      <option value="All" style={{ background: "#0d1717" }}>All</option>
-      {options.map((opt) => (
-        <option key={opt} value={opt} style={{ background: "#0d1717" }}>
-          {opt}
-        </option>
-      ))}
-    </select>
-  </div>
-);
+const FilterDropdown = ({ label, value, onChange, options }) => {
+  return (
+    <div>
+      <label className="block text-xs font-semibold uppercase tracking-wider text-[#859496] mb-1.5">
+        {label}
+      </label>
+      <div className="relative">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="block w-full px-3 py-2 rounded-xl border border-[#202c2e] bg-[#0d1415] text-[#e2e8f0] text-sm focus:outline-none focus:border-[#fff800]/60 focus:ring-2 focus:ring-[#fff800]/15 transition-all cursor-pointer hover:border-[#2f3f42]"
+        >
+          <option value="All" className="bg-[#0c1214] text-white">
+            All
+          </option>
+          {options.map((option) => (
+            <option
+              key={option}
+              value={option}
+              className="bg-[#0c1214] text-white"
+            >
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+};
 
 export default FilterDropdown;
+
