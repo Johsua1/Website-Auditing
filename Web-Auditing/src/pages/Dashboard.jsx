@@ -8,13 +8,47 @@ import { getStatistics, getCurrentQuarter, filterWebsites } from '../utils/helpe
 
 const Dashboard = ({ websites }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState(null);
   const stats = getStatistics(websites);
   const quarter = getCurrentQuarter();
   
-  const filteredWebsites = websites.filter(w => 
-    w.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    w.url.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Apply filters
+  let filteredWebsites = websites;
+  
+  // Apply search filter
+  if (searchTerm) {
+    filteredWebsites = filteredWebsites.filter(w => 
+      w.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      w.url.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
+  
+  // Apply status filter from stat cards
+  if (selectedFilter) {
+    switch(selectedFilter) {
+      case 'audited':
+        filteredWebsites = filteredWebsites.filter(w => w.dateAudited !== null);
+        break;
+      case 'pending':
+        filteredWebsites = filteredWebsites.filter(w => w.status === 'Pending');
+        break;
+      case 'passed':
+        filteredWebsites = filteredWebsites.filter(w => w.status === 'Passed');
+        break;
+      case 'needsReview':
+        filteredWebsites = filteredWebsites.filter(w => w.status === 'Needs Review');
+        break;
+      case 'failed':
+        filteredWebsites = filteredWebsites.filter(w => w.status === 'Failed');
+        break;
+      default:
+        break;
+    }
+  }
+  
+  const handleFilterClick = (filter) => {
+    setSelectedFilter(selectedFilter === filter ? null : filter);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
@@ -41,52 +75,97 @@ const Dashboard = ({ websites }) => {
             onChange={setSearchTerm}
             placeholder="Search websites..."
           />
+          {selectedFilter && (
+            <div className="mt-4 flex items-center gap-2">
+              <span className="text-sm text-gray-600">Filtered by:</span>
+              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                {selectedFilter === 'audited' && 'Audited'}
+                {selectedFilter === 'pending' && 'Pending'}
+                {selectedFilter === 'passed' && 'Passed'}
+                {selectedFilter === 'needsReview' && 'Needs Review'}
+                {selectedFilter === 'failed' && 'Failed'}
+              </span>
+              <button
+                onClick={() => setSelectedFilter(null)}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Clear Filter
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-          <StatCard 
-            title="Total Websites" 
-            value={stats.total} 
-            color="blue"
-            icon={<Globe className="w-8 h-8" />}
-          />
-          <StatCard 
-            title="Audited" 
-            value={stats.audited} 
-            color="purple"
-            icon={<CheckCircle className="w-8 h-8" />}
-          />
-          <StatCard 
-            title="Pending" 
-            value={stats.pending} 
-            color="gray"
-            icon={<FileText className="w-8 h-8" />}
-          />
-          <StatCard 
-            title="Passed" 
-            value={stats.passed} 
-            color="green"
-            icon={<CheckCircle className="w-8 h-8" />}
-          />
-          <StatCard 
-            title="Needs Review" 
-            value={stats.needsReview} 
-            color="yellow"
-            icon={<Eye className="w-8 h-8" />}
-          />
-          <StatCard 
-            title="Failed" 
-            value={stats.failed} 
-            color="red"
-            icon={<Shield className="w-8 h-8" />}
-          />
+          <div onClick={() => setSelectedFilter(null)}>
+            <StatCard 
+              title="Total Websites" 
+              value={stats.total} 
+              color="blue"
+              icon={<Globe className="w-8 h-8" />}
+              isActive={selectedFilter === null}
+              clickable={false}
+            />
+          </div>
+          <div onClick={() => handleFilterClick('audited')} className="cursor-pointer">
+            <StatCard 
+              title="Audited" 
+              value={stats.audited} 
+              color="purple"
+              icon={<CheckCircle className="w-8 h-8" />}
+              isActive={selectedFilter === 'audited'}
+              clickable={true}
+            />
+          </div>
+          <div onClick={() => handleFilterClick('pending')} className="cursor-pointer">
+            <StatCard 
+              title="Pending" 
+              value={stats.pending} 
+              color="gray"
+              icon={<FileText className="w-8 h-8" />}
+              isActive={selectedFilter === 'pending'}
+              clickable={true}
+            />
+          </div>
+          <div onClick={() => handleFilterClick('passed')} className="cursor-pointer">
+            <StatCard 
+              title="Passed" 
+              value={stats.passed} 
+              color="green"
+              icon={<CheckCircle className="w-8 h-8" />}
+              isActive={selectedFilter === 'passed'}
+              clickable={true}
+            />
+          </div>
+          <div onClick={() => handleFilterClick('needsReview')} className="cursor-pointer">
+            <StatCard 
+              title="Needs Review" 
+              value={stats.needsReview} 
+              color="yellow"
+              icon={<Eye className="w-8 h-8" />}
+              isActive={selectedFilter === 'needsReview'}
+              clickable={true}
+            />
+          </div>
+          <div onClick={() => handleFilterClick('failed')} className="cursor-pointer">
+            <StatCard 
+              title="Failed" 
+              value={stats.failed} 
+              color="red"
+              icon={<Shield className="w-8 h-8" />}
+              isActive={selectedFilter === 'failed'}
+              clickable={true}
+            />
+          </div>
         </div>
 
         {/* Recent Websites Table */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900">Website Overview</h2>
+            <span className="text-sm text-gray-600">
+              Showing {filteredWebsites.length} of {websites.length} websites
+            </span>
           </div>
           
           {/* Desktop Table View */}
