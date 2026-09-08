@@ -82,7 +82,7 @@ const Dashboard = ({ websites, onStartAudit }) => {
           <div className="flex items-center gap-3">
             <div className="text-xs font-semibold text-[#859496] bg-[#121a1b] px-4 py-2 rounded-xl border border-[#202c2e] flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Quarter: <strong className="text-white">{quarter}</strong></span>
+              <span><strong className="text-white">{quarter}</strong></span>
             </div>
           </div>
         </div>
