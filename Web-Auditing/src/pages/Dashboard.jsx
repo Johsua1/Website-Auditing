@@ -60,35 +60,31 @@ const Dashboard = ({ websites, onStartAudit }) => {
   });
 
   return (
-    <div className="min-h-screen pt-16 pb-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+    <div className="min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Header - Mobile Optimized */}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+            <div className="flex-1">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-2">
                 Website Audit &amp; Maintenance
               </h1>
-              <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-[#fff800]/10 text-[#fff800] border border-[#fff800]/25">
-                <Sparkles className="w-3 h-3" />
-                Live Control
-              </span>
+              <p className="text-sm text-[#859496] leading-relaxed">
+                Real-time monitoring, security assessments, and SEO performance metrics.
+              </p>
             </div>
-            <p className="text-sm sm:text-base text-[#859496]">
-              Real-time monitoring, security assessments, and SEO performance metrics.
-            </p>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <div className="text-xs font-semibold text-[#859496] bg-[#121a1b] px-4 py-2 rounded-xl border border-[#202c2e] flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span><strong className="text-white">{quarter}</strong></span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="text-xs font-semibold text-[#859496] bg-[#121a1b] px-3 sm:px-4 py-2 rounded-xl border border-[#202c2e] flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span><strong className="text-white">{quarter}</strong></span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Interactive Stat Cards Filter Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5 mb-8">
+        {/* Interactive Stat Cards Filter Row - Mobile Optimized Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3.5 mb-6 sm:mb-8 stat-grid-mobile">
           <StatCard
             title="Total Sites"
             value={stats.total}
@@ -161,25 +157,25 @@ const Dashboard = ({ websites, onStartAudit }) => {
           />
         </div>
 
-        {/* Search, Filter Tag & View Switcher */}
-        <div className="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Search, Filter Tag & View Switcher - Mobile Optimized */}
+        <div className="mb-4 sm:mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="w-full sm:max-w-md">
             <SearchBar
               value={searchTerm}
               onChange={setSearchTerm}
-              placeholder="Search website name, URL, or type..."
+              placeholder="Search website name, URL..."
             />
           </div>
 
-          <div className="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-3">
+          <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 flex-wrap">
             {selectedStatusFilter !== "ALL" && (
               <button
                 onClick={() => setSelectedStatusFilter("ALL")}
-                className="inline-flex items-center gap-1.5 text-xs text-[#fff800] bg-[#fff800]/10 hover:bg-[#fff800]/20 border border-[#fff800]/30 px-3 py-1.5 rounded-xl transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs text-[#fff800] bg-[#fff800]/10 hover:bg-[#fff800]/20 active:bg-[#fff800]/30 border border-[#fff800]/30 px-3 py-2 rounded-xl transition-colors"
               >
-                <Filter className="w-3 h-3" />
-                Filter: {selectedStatusFilter}
-                <span className="font-bold ml-1">&times;</span>
+                <Filter className="w-3.5 h-3.5" />
+                <span className="hidden xs:inline">Filter:</span> {selectedStatusFilter}
+                <span className="font-bold ml-0.5">&times;</span>
               </button>
             )}
 
@@ -188,26 +184,26 @@ const Dashboard = ({ websites, onStartAudit }) => {
               <button
                 type="button"
                 onClick={() => setViewMode("table")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
                   viewMode === "table"
                     ? "bg-[#182325] text-white shadow-xs border border-[#2b3c3f]"
-                    : "text-[#859496] hover:text-white"
+                    : "text-[#859496] hover:text-white active:bg-[#12191b]"
                 }`}
               >
                 <List className="w-3.5 h-3.5" />
-                Table
+                <span className="hidden sm:inline">Table</span>
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode("cards")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
                   viewMode === "cards"
                     ? "bg-[#182325] text-white shadow-xs border border-[#2b3c3f]"
-                    : "text-[#859496] hover:text-white"
+                    : "text-[#859496] hover:text-white active:bg-[#12191b]"
                 }`}
               >
                 <LayoutGrid className="w-3.5 h-3.5" />
-                Cards
+                <span className="hidden sm:inline">Cards</span>
               </button>
             </div>
           </div>
@@ -236,9 +232,11 @@ const Dashboard = ({ websites, onStartAudit }) => {
             </Link>
           </div>
 
-          {/* Table View */}
+          {/* Table View - Auto-switch to cards on mobile */}
           {viewMode === "table" ? (
-            <div className="overflow-x-auto">
+            <>
+              {/* Desktop/Tablet Table View */}
+              <div className="hidden md:block overflow-x-auto">
               <table className="min-w-full divide-y divide-[#1a2527]">
                 <thead className="bg-[#101719]">
                   <tr>
@@ -370,9 +368,106 @@ const Dashboard = ({ websites, onStartAudit }) => {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile Card View (auto-shown on phones) */}
+            <div className="block md:hidden p-4 space-y-3">
+              {filteredWebsites.map((website) => (
+                <div
+                  key={website.id}
+                  className="rounded-xl bg-[#111819] border border-[#1f2c2e] p-4 hover:border-[#2e3f42] active:border-[#3e4f52] transition-all"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <Link
+                      to={`/websites/${website.id}`}
+                      className="shrink-0"
+                    >
+                      <CompanyLogo
+                        website={website}
+                        className="h-12 w-12 rounded-xl object-contain border border-white/10 bg-white p-1"
+                      />
+                    </Link>
+                    <div className="flex-1 min-w-0">
+                      <Link
+                        to={`/websites/${website.id}`}
+                        className="font-semibold text-white hover:text-[#fff800] active:text-[#fffa66] transition-colors truncate block text-sm"
+                      >
+                        {website.name}
+                      </Link>
+                      {website.url !== "URL Not Provided" ? (
+                        <a
+                          href={website.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-[#94a3b8] hover:text-[#fff800] active:underline transition-colors truncate block mt-0.5"
+                        >
+                          {website.url}
+                        </a>
+                      ) : (
+                        <p className="text-xs text-[#64748b] truncate mt-0.5">
+                          {website.url}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    <div className="rounded-lg bg-[#0e1415] p-2 border border-[#1b2527]">
+                      <span className="text-[9px] uppercase tracking-wider text-[#64748b] block mb-1">
+                        Status
+                      </span>
+                      <StatusBadge status={website.status} size="sm" />
+                    </div>
+                    <div className="rounded-lg bg-[#0e1415] p-2 border border-[#1b2527]">
+                      <span className="text-[9px] uppercase tracking-wider text-[#64748b] block mb-1">
+                        Security
+                      </span>
+                      <StatusBadge status={website.securityCheck} size="sm" />
+                    </div>
+                    <div className="rounded-lg bg-[#0e1415] p-2 border border-[#1b2527]">
+                      <span className="text-[9px] uppercase tracking-wider text-[#64748b] block mb-1">
+                        Function
+                      </span>
+                      <StatusBadge status={website.functionalityTest} size="sm" />
+                    </div>
+                    <div className="rounded-lg bg-[#0e1415] p-2 border border-[#1b2527]">
+                      <span className="text-[9px] uppercase tracking-wider text-[#64748b] block mb-1">
+                        SEO
+                      </span>
+                      <StatusBadge status={website.seo} size="sm" />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-3 border-t border-[#1b2527]">
+                    {onStartAudit && (
+                      <button
+                        type="button"
+                        onClick={() => onStartAudit(website)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 rounded-lg text-black bg-[#fff800] hover:bg-[#ffe600] active:bg-[#ffd700] shadow-glow-yellow transition-all active:scale-98"
+                      >
+                        <Play className="w-3.5 h-3.5 fill-black" />
+                        Start Audit
+                      </button>
+                    )}
+                    <Link
+                      to={`/websites/${website.id}`}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-semibold py-2.5 rounded-lg text-white bg-[#151f21] hover:bg-[#1d2a2d] active:bg-[#243338] border border-[#27373a] transition-all"
+                    >
+                      Details
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+              {filteredWebsites.length === 0 && (
+                <div className="px-6 py-12 text-center text-[#859496] bg-[#0e1516]/50 rounded-xl border border-[#202c2e]">
+                  No websites matched the selected filters.
+                </div>
+              )}
+            </div>
+            </>
           ) : (
             /* Cards View */
-            <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {filteredWebsites.map((website) => (
                 <div
                   key={website.id}

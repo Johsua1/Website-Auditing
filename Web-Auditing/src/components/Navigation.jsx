@@ -115,9 +115,9 @@ const Navigation = () => {
     <>
       {/* ── Fixed Header ── */}
       <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-[#0b1011]/90 backdrop-blur-xl border-b border-[#202c2e]">
-        <div className="relative flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Left: Hamburger & Current Breadcrumb */}
-          <div className="flex min-w-0 items-center gap-3">
+        <div className="relative flex h-full items-center justify-between px-3 sm:px-6 lg:px-8">
+          {/* Left: Hamburger (Mobile) or Hamburger + Breadcrumb (Desktop) */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               type="button"
               aria-label={
@@ -133,8 +133,9 @@ const Navigation = () => {
                 <Menu className="h-5 w-5" />
               )}
             </button>
-            <div className="flex items-center gap-2">
-              <span className="hidden sm:inline-block text-xs uppercase tracking-wider font-semibold text-[#64748b]">
+            {/* Breadcrumb - hidden on mobile */}
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="text-xs uppercase tracking-wider font-semibold text-[#64748b]">
                 Navigation /
               </span>
               <span className="rounded-md bg-[#141e20] border border-[#223033] px-2.5 py-1 text-xs font-semibold text-[#e2e8f0] tracking-wide">
@@ -143,36 +144,36 @@ const Navigation = () => {
             </div>
           </div>
 
-          {/* Center: Brand */}
+          {/* Center: Brand - Responsive */}
           <Link
             to="/"
-            className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2.5 group"
+            className="flex items-center gap-2 group"
           >
-            <div className="h-8 w-8 rounded-lg bg-white/10 border border-white/10 p-1 flex items-center justify-center transition-transform group-hover:scale-105">
+            <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-white/10 border border-white/10 p-1 flex items-center justify-center transition-transform group-hover:scale-105 flex-shrink-0">
               <img
                 src={websiteLogo}
                 alt="Website Audit and Maintenance"
                 className="h-full w-full object-contain"
               />
             </div>
-            <span className="whitespace-nowrap text-sm font-bold tracking-tight text-white group-hover:text-[#fff800] transition-colors sm:text-lg">
-              Website Audit <span className="text-[#859496] font-normal">&amp;</span> Maintenance
+            {/* Show "WA & M" on mobile, full text on larger screens */}
+            <span className="text-xs sm:text-sm lg:text-base font-bold tracking-tight text-white group-hover:text-[#fff800] transition-colors whitespace-nowrap">
+              <span className="hidden sm:inline">Website Audit <span className="text-[#859496] font-normal">&amp;</span> Maintenance</span>
+              <span className="inline sm:hidden">WA <span className="text-[#859496] font-normal">&amp;</span> M</span>
             </span>
           </Link>
 
           {/* Right: Quick Actions */}
-          <div className="ml-auto flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
             <button
               type="button"
               aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
               aria-pressed={isLightMode}
               onClick={() => setIsLightMode((light) => !light)}
-              className="rounded-lg p-2 border border-[#202c2e] bg-[#12191b] text-[#94a3b8] transition-all duration-150 hover:bg-[#1a2527] hover:text-[#fff800] hover:border-[#2f3f42]"
+              className="flex-shrink-0 rounded-lg p-2 border border-[#202c2e] bg-[#12191b] text-[#94a3b8] transition-all duration-150 hover:bg-[#1a2527] hover:text-[#fff800] hover:border-[#2f3f42]"
             >
               {isLightMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
             </button>
-
-            
           </div>
         </div>
       </header>
@@ -206,7 +207,7 @@ const Navigation = () => {
           </div>
           <div>
             <span className="block text-sm font-bold text-white tracking-tight">
-              Website Audit &amp; Maintenance
+              Website Audit & Maintenance
             </span>
             <span className="text-[11px] text-[#859496]">
               Paddle-Styled Control Center
@@ -303,6 +304,63 @@ const Navigation = () => {
         </div>
 
       </aside>
+
+      {/* ── Mobile Bottom Navigation Bar (Phones/Tablets Only) ── */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0b1011]/95 backdrop-blur-xl border-t border-[#202c2e] pb-safe">
+        <div className="grid grid-cols-4 gap-0.5 px-1 py-1.5">
+          <Link
+            to="/"
+            className={`flex flex-col items-center justify-center gap-1 rounded-xl px-3 py-2.5 transition-all min-h-[60px] ${
+              isActive("/")
+                ? "bg-[#fff800]/10 text-[#fff800]"
+                : "text-[#859496] active:bg-[#12191b]"
+            }`}
+            onClick={closeSidebar}
+          >
+            <LayoutDashboard className="h-5 w-5 flex-shrink-0" />
+            <span className="text-[10px] font-semibold tracking-wide">Dashboard</span>
+          </Link>
+
+          <Link
+            to="/websites"
+            className={`flex flex-col items-center justify-center gap-1 rounded-xl px-3 py-2.5 transition-all min-h-[60px] ${
+              isWebsiteSectionActive
+                ? "bg-[#fff800]/10 text-[#fff800]"
+                : "text-[#859496] active:bg-[#12191b]"
+            }`}
+            onClick={closeSidebar}
+          >
+            <Globe className="h-5 w-5 flex-shrink-0" />
+            <span className="text-[10px] font-semibold tracking-wide">Websites</span>
+          </Link>
+
+          <Link
+            to="/reports"
+            className={`flex flex-col items-center justify-center gap-1 rounded-xl px-3 py-2.5 transition-all min-h-[60px] ${
+              isActive("/reports")
+                ? "bg-[#fff800]/10 text-[#fff800]"
+                : "text-[#859496] active:bg-[#12191b]"
+            }`}
+            onClick={closeSidebar}
+          >
+            <FileText className="h-5 w-5 flex-shrink-0" />
+            <span className="text-[10px] font-semibold tracking-wide">Reports</span>
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(true)}
+            className={`flex flex-col items-center justify-center gap-1 rounded-xl px-3 py-2.5 transition-all min-h-[60px] ${
+              isMobileMenuOpen
+                ? "bg-[#fff800]/10 text-[#fff800]"
+                : "text-[#859496] active:bg-[#12191b]"
+            }`}
+          >
+            <Menu className="h-5 w-5 flex-shrink-0" />
+            <span className="text-[10px] font-semibold tracking-wide">Menu</span>
+          </button>
+        </div>
+      </nav>
     </>
   );
 };
