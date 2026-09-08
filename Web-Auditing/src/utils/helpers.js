@@ -39,10 +39,12 @@ export const formatDate = (date) => {
 };
 
 export const getCurrentQuarter = () => {
-  const month = new Date().getMonth() + 1;
-  const year = new Date().getFullYear();
-  const quarter = Math.ceil(month / 3);
-  return `Q${quarter} ${year}`;
+  const date = new Date();
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
 };
 
 export const getStatistics = (websites) => {
