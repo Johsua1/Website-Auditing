@@ -271,23 +271,6 @@ html.light ::-webkit-scrollbar-thumb:hover { background: #8faab7; }
 
 @media print {
   @page {
-    margin: 1cm;
-  }
-  
-  .print-hidden {
-    display: none !important;
-  }
-  
-  body {
-    background: white;
-    color: black;
-  }
-}
-
-
-/* Professional PDF Print Styles */
-@media print {
-  @page {
     margin: 1.5cm;
     size: A4;
   }
@@ -297,64 +280,71 @@ html.light ::-webkit-scrollbar-thumb:hover { background: #8faab7; }
     color: black !important;
   }
   
-  /* Remove all background colors and shadows for print except where needed */
-  * {
-    box-shadow: none !important;
-    text-shadow: none !important;
+  /* Hide all navigation and actions */
+  header,
+  aside,
+  .print\:hidden {
+    display: none !important;
   }
   
-  /* Ensure proper page breaks */
-  .report-section {
+  /* Force page breaks before each section */
+  .page-break-before {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+  
+  /* Prevent page breaks inside sections */
+  .page-break-avoid {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  /* Clean table printing */
+  table {
+    page-break-inside: auto;
+    border-collapse: collapse !important;
+  }
+  
+  tr {
     page-break-inside: avoid;
+    page-break-after: auto;
   }
   
-  h1, h2, h3, h4, h5, h6 {
+  thead {
+    display: table-header-group;
+  }
+  
+  /* Avoid breaks after headings */
+  h1, h2, h3 {
     page-break-after: avoid;
-    color: black !important;
   }
   
-  /* Header styling for print - preserve colors */
-  .report-header-banner {
-    background: linear-gradient(135deg, #334155 0%, #1e293b 100%) !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color: white !important;
-  }
-  
-  .report-header-banner * {
-    color: white !important;
-  }
-  
-  /* Preserve gradient backgrounds for section number badges */
-  [class*="bg-gradient"] {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-  
-  /* Preserve border colors */
-  [class*="border"] {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-  
-  /* Ensure status badges colors are preserved */
+  /* Preserve colors for status badges */
   [class*="bg-green"],
   [class*="bg-yellow"],
   [class*="bg-red"],
   [class*="bg-blue"],
-  [class*="bg-gray"] {
+  [class*="bg-gray"],
+  [class*="text-green"],
+  [class*="text-yellow"],
+  [class*="text-red"] {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
   
-  /* Better spacing for print */
-  .mb-10 {
-    margin-bottom: 1.5rem !important;
+  /* Preserve table borders */
+  table,
+  th,
+  td {
+    border-color: #d1d5db !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   
-  /* Avoid breaking inside cards */
-  [class*="rounded-lg"],
-  [class*="rounded-xl"] {
-    page-break-inside: avoid;
+  /* Preserve background for table headers */
+  thead tr {
+    background-color: #f9fafb !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
