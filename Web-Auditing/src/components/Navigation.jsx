@@ -172,110 +172,7 @@ const Navigation = () => {
               {isLightMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
             </button>
 
-            {/* Notification Bell with interactive popover */}
-            <div className="relative" ref={notifRef}>
-              <button
-                type="button"
-                aria-label="Notifications"
-                onClick={() => {
-                  setShowNotifications((prev) => !prev);
-                  setShowProfile(false);
-                }}
-                className={`relative rounded-lg p-2 border transition-all duration-150 ${
-                  showNotifications
-                    ? "bg-[#182325] text-[#fff800] border-[#384a4d]"
-                    : "bg-[#12191b] text-[#94a3b8] hover:bg-[#1a2527] hover:text-white border-[#202c2e]"
-                }`}
-              >
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-[#fff800] ring-2 ring-[#0b1011] animate-pulse" />
-              </button>
-
-              {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 rounded-2xl bg-[#0e1516] border border-[#202c2e] p-4 shadow-2xl backdrop-blur-xl z-50">
-                  <div className="flex items-center justify-between pb-3 border-b border-[#202c2e]">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#94a3b8]">
-                      Audit Notifications
-                    </span>
-                    <span className="text-[11px] text-[#fff800] bg-[#fff800]/10 px-2 py-0.5 rounded-full border border-[#fff800]/20">
-                      3 New
-                    </span>
-                  </div>
-                  <div className="divide-y divide-[#182325] mt-2">
-                    {sampleNotifications.map((notif) => (
-                      <div key={notif.id} className="py-2.5 flex items-start gap-2.5">
-                        {notif.type === "warn" ? (
-                          <AlertTriangle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
-                        ) : (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-white truncate">
-                            {notif.title}
-                          </p>
-                          <p className="text-[11px] text-[#859496] leading-tight">
-                            {notif.desc}
-                          </p>
-                          <span className="text-[10px] text-[#556466] mt-1 block">
-                            {notif.time}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Profile with interactive popover */}
-            <div className="relative" ref={profileRef}>
-              <button
-                type="button"
-                aria-label="Profile"
-                onClick={() => {
-                  setShowProfile((prev) => !prev);
-                  setShowNotifications(false);
-                }}
-                className={`rounded-lg p-2 border transition-all duration-150 ${
-                  showProfile
-                    ? "bg-[#182325] text-[#fff800] border-[#384a4d]"
-                    : "bg-[#12191b] text-[#94a3b8] hover:bg-[#1a2527] hover:text-white border-[#202c2e]"
-                }`}
-              >
-                <User className="h-5 w-5" />
-              </button>
-
-              {showProfile && (
-                <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#0e1516] border border-[#202c2e] p-4 shadow-2xl backdrop-blur-xl z-50">
-                  <div className="flex items-center gap-3 pb-3 border-b border-[#202c2e]">
-                    <div className="h-10 w-10 rounded-full bg-[#182325] border border-[#27373a] flex items-center justify-center text-[#fff800] font-bold text-sm">
-                      QA
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">
-                        Lead Auditor
-                      </p>
-                      <p className="text-xs text-[#859496] truncate">
-                        auditor@system.local
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-3 space-y-1">
-                    <div className="flex items-center justify-between text-xs text-[#859496] py-1">
-                      <span>System Status</span>
-                      <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        Online
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs text-[#859496] py-1">
-                      <span>Theme</span>
-                      <span className="text-[#e2e8f0]">{isLightMode ? "Paddle Light" : "Paddle Dark"}</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            
           </div>
         </div>
       </header>
@@ -405,18 +302,6 @@ const Navigation = () => {
           </Link>
         </div>
 
-        {/* Footer Pill inside Drawer */}
-        <div className="p-4 mt-8">
-          <div className="rounded-xl bg-[#11191a] border border-[#202c2e] p-3 text-center">
-            <div className="flex items-center justify-center gap-2 text-xs text-[#fff800] font-medium mb-1">
-              <span className="h-2 w-2 rounded-full bg-[#fff800] animate-pulse" />
-              Interactive Audit Mode
-            </div>
-            <p className="text-[11px] text-[#718082]">
-              Real-time filters, interactive checks &amp; instant audit logging.
-            </p>
-          </div>
-        </div>
       </aside>
     </>
   );

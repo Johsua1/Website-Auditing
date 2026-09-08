@@ -75,8 +75,8 @@ const ReportDetail = ({ websites }) => {
   };
 
   return (
-    <div className="min-h-screen pt-16 pb-16">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen pt-16 pb-16 print:pt-0 print:pb-0">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 print:max-w-full print:px-8 print:py-0">
         {/* Toast Notification */}
         {downloadToast && (
           <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-[#121c1e] text-white px-4 py-3 rounded-xl border border-[#2c3d40] shadow-2xl animate-fade-in print:hidden">
@@ -121,71 +121,86 @@ const ReportDetail = ({ websites }) => {
         </div>
 
         {/* Report Content */}
-        <div className="rounded-2xl bg-[#0e1516]/95 border border-[#202c2e] shadow-2xl overflow-hidden backdrop-blur-md print:bg-white print:border-gray-300 print:shadow-none">
+        <div className="rounded-2xl bg-white border border-gray-200 shadow-lg overflow-hidden print:shadow-none print:rounded-none">
           {/* Header Banner */}
-          <div className="report-header-banner bg-gradient-to-r from-[#141f21] via-[#162326] to-[#0f1719] text-white p-6 sm:p-8 border-b border-[#223134] print:bg-gray-100 print:text-black">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#fff800]/10 text-[#fff800] border border-[#fff800]/20 text-[11px] font-bold tracking-wider uppercase mb-3">
-                  <Shield className="w-3.5 h-3.5" />
-                  Executive Audit Dossier
+          <div className="report-header-banner bg-gradient-to-br from-slate-800 to-slate-900 text-white p-8 sm:p-10 border-b-4 border-blue-600 print:border-b-2">
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-16 h-16 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+                    <Shield className="w-8 h-8 text-blue-400" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold tracking-wider uppercase text-blue-300 mb-1">
+                      Executive Audit Report
+                    </div>
+                    <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                      Website Audit & Maintenance
+                    </h1>
+                  </div>
                 </div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white print:text-black">
-                  WEBSITE AUDIT REPORT
-                </h1>
-                <p className="text-xs sm:text-sm text-[#859496] mt-1 print:text-gray-600">
-                  Comprehensive Security, Functionality, Performance, and SEO Evaluation
-                </p>
+
+                <div className="text-right">
+                  <div className="text-xs uppercase tracking-wider text-gray-300 font-semibold mb-2">
+                    Overall Status
+                  </div>
+                  <div className="inline-block px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+                    <StatusBadge status={website.status} />
+                  </div>
+                </div>
               </div>
 
-              <div className="text-left sm:text-right">
-                <div className="text-[11px] uppercase tracking-wider text-[#859496] font-semibold mb-1 print:text-gray-500">
-                  Overall Verdict
-                </div>
-                <StatusBadge status={website.status} />
+              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+                <p className="text-sm text-gray-200">
+                  Comprehensive Security, Functionality, Performance, and SEO Evaluation
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="p-6 sm:p-8">
+          <div className="p-8 sm:p-10 bg-white">
             {/* Website Information Card */}
-            <div className="mb-8 p-5 rounded-xl bg-[#11191b] border border-[#1d2a2d] print:bg-gray-50 print:border-gray-200">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
-                <div className="flex items-center gap-4 min-w-0">
+            <div className="mb-10 p-6 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200 shadow-sm">
+              <div className="flex flex-col gap-6">
+                <div className="flex items-center gap-5">
                   <CompanyLogo
                     website={website}
-                    className="h-14 w-14 rounded-xl object-contain border border-white/10 bg-white p-1 shrink-0 shadow-sm"
+                    className="h-20 w-20 rounded-xl object-contain border-2 border-gray-300 bg-white p-2 shrink-0 shadow-md"
                   />
-                  <div className="min-w-0">
-                    <h2 className="text-xl font-bold text-white print:text-black truncate">
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
                       {website.name}
                     </h2>
-                    <div className="flex items-center gap-2 text-xs text-[#859496] mt-0.5">
-                      <span className="truncate">{website.url}</span>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <span className="truncate font-medium">{website.url}</span>
                       {website.url !== "URL Not Provided" && (
                         <a
                           href={website.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#fff800] hover:text-[#ffe600] inline-flex items-center print:hidden"
+                          className="text-blue-600 hover:text-blue-800 inline-flex items-center print:hidden"
                         >
-                          <ExternalLink className="w-3.5 h-3.5" />
+                          <ExternalLink className="w-4 h-4" />
                         </a>
                       )}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-4 text-xs">
-                  <div className="bg-[#152022] px-3 py-1.5 rounded-lg border border-[#213033] print:bg-white print:border-gray-300">
-                    <span className="text-[#859496] mr-1.5">Type:</span>
-                    <span className="font-semibold text-white print:text-black">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-300 shadow-sm">
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+                      Website Type
+                    </span>
+                    <span className="text-base font-bold text-gray-900">
                       {website.type}
                     </span>
                   </div>
-                  <div className="bg-[#152022] px-3 py-1.5 rounded-lg border border-[#213033] print:bg-white print:border-gray-300">
-                    <span className="text-[#859496] mr-1.5">Audit Date:</span>
-                    <span className="font-semibold text-white print:text-black">
+                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-300 shadow-sm">
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+                      Audit Date
+                    </span>
+                    <span className="text-base font-bold text-gray-900">
                       {formatDate(website.dateAudited)}
                     </span>
                   </div>
@@ -193,22 +208,31 @@ const ReportDetail = ({ websites }) => {
               </div>
 
               {/* Status Summary Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="rounded-xl bg-[#141b1d] border border-[#202d30] p-3.5 print:bg-white print:border-gray-300">
-                  <div className="text-[11px] font-semibold text-[#859496] uppercase tracking-wider mb-2">
-                    Security Check
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t-2 border-gray-200">
+                <div className="rounded-lg bg-white border-2 border-gray-300 p-4 shadow-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Shield className="w-5 h-5 text-red-600" />
+                    <div className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                      Security Check
+                    </div>
                   </div>
                   <StatusBadge status={website.securityCheck} />
                 </div>
-                <div className="rounded-xl bg-[#141b1d] border border-[#202d30] p-3.5 print:bg-white print:border-gray-300">
-                  <div className="text-[11px] font-semibold text-[#859496] uppercase tracking-wider mb-2">
-                    Functionality Test
+                <div className="rounded-lg bg-white border-2 border-gray-300 p-4 shadow-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Activity className="w-5 h-5 text-green-600" />
+                    <div className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                      Functionality Test
+                    </div>
                   </div>
                   <StatusBadge status={website.functionalityTest} />
                 </div>
-                <div className="rounded-xl bg-[#141b1d] border border-[#202d30] p-3.5 print:bg-white print:border-gray-300">
-                  <div className="text-[11px] font-semibold text-[#859496] uppercase tracking-wider mb-2">
-                    SEO Audit
+                <div className="rounded-lg bg-white border-2 border-gray-300 p-4 shadow-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="w-5 h-5 text-yellow-600" />
+                    <div className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                      SEO Audit
+                    </div>
                   </div>
                   <StatusBadge status={website.seo} />
                 </div>
@@ -216,200 +240,237 @@ const ReportDetail = ({ websites }) => {
             </div>
 
             {/* Section 1: Security Check */}
-            <div className="mb-8 pb-8 border-b border-[#1b2628]">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center text-sm font-extrabold">
+            <div className="mb-10 pb-8 border-b-2 border-gray-200">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-red-600 text-white flex items-center justify-center text-lg font-extrabold shadow-md">
                   1
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white print:text-black">
-                    Security Architecture &amp; Verification
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Security Architecture & Verification
                   </h3>
-                  <p className="text-xs text-[#859496]">
+                  <p className="text-sm text-gray-600 mt-1">
                     Evaluation of encrypted transports, security headers, and authentication safeguards.
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {activeSecurityList.map((item, index) => (
                   <div
                     key={item.id}
-                    className="flex items-start justify-between gap-3 p-3.5 rounded-xl bg-[#11191b] border border-[#1b2729] print:bg-gray-50 print:border-gray-200"
+                    className="flex items-start justify-between gap-4 p-4 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors"
                   >
-                    <div className="flex items-start gap-3">
-                      <span className="w-5 h-5 rounded bg-[#162124] text-[#859496] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="flex items-start gap-3 flex-1">
+                      <span className="w-7 h-7 rounded-lg bg-white border border-gray-300 text-gray-700 text-sm font-bold flex items-center justify-center shrink-0 mt-1 shadow-sm">
                         {index + 1}
                       </span>
-                      <div>
-                        <h4 className="text-sm font-semibold text-white print:text-black">
+                      <div className="flex-1">
+                        <h4 className="text-sm font-bold text-gray-900 mb-1">
                           {item.name}
                         </h4>
-                        <p className="text-xs text-[#859496] mt-0.5">
+                        <p className="text-xs text-gray-600 leading-relaxed">
                           {item.description}
                         </p>
                       </div>
                     </div>
-                    <StatusBadge status={item.status} />
+                    <div className="shrink-0">
+                      <StatusBadge status={item.status} />
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Section 2: Functionality Test */}
-            <div className="mb-8 pb-8 border-b border-[#1b2628]">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-extrabold">
+            <div className="mb-10 pb-8 border-b-2 border-gray-200">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 text-white flex items-center justify-center text-lg font-extrabold shadow-md">
                   2
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white print:text-black">
-                    Functionality &amp; UX Validation
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Functionality & UX Validation
                   </h3>
-                  <p className="text-xs text-[#859496]">
+                  <p className="text-sm text-gray-600 mt-1">
                     Testing interactive workflows, cross-device responsiveness, and form submissions.
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {activeFunctionalityList.map((item, index) => (
                   <div
                     key={item.id}
-                    className="flex items-start justify-between gap-3 p-3.5 rounded-xl bg-[#11191b] border border-[#1b2729] print:bg-gray-50 print:border-gray-200"
+                    className="flex items-start justify-between gap-4 p-4 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors"
                   >
-                    <div className="flex items-start gap-3">
-                      <span className="w-5 h-5 rounded bg-[#162124] text-[#859496] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="flex items-start gap-3 flex-1">
+                      <span className="w-7 h-7 rounded-lg bg-white border border-gray-300 text-gray-700 text-sm font-bold flex items-center justify-center shrink-0 mt-1 shadow-sm">
                         {index + 1}
                       </span>
-                      <div>
-                        <h4 className="text-sm font-semibold text-white print:text-black">
+                      <div className="flex-1">
+                        <h4 className="text-sm font-bold text-gray-900 mb-1">
                           {item.name}
                         </h4>
-                        <p className="text-xs text-[#859496] mt-0.5">
+                        <p className="text-xs text-gray-600 leading-relaxed">
                           {item.description}
                         </p>
                       </div>
                     </div>
-                    <StatusBadge status={item.status} />
+                    <div className="shrink-0">
+                      <StatusBadge status={item.status} />
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Section 3: SEO Audit */}
-            <div className="mb-8 pb-8 border-b border-[#1b2628]">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-[#fff800]/10 border border-[#fff800]/20 text-[#fff800] flex items-center justify-center text-sm font-extrabold">
+            <div className="mb-10 pb-8 border-b-2 border-gray-200">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-lg font-extrabold shadow-md">
                   3
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white print:text-black">
-                    SEO &amp; Discoverability Audit
+                  <h3 className="text-xl font-bold text-gray-900">
+                    SEO & Discoverability Audit
                   </h3>
-                  <p className="text-xs text-[#859496]">
+                  <p className="text-sm text-gray-600 mt-1">
                     Inspection of search indexing, canonical tags, structured data, and performance.
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {activeSeoList.map((item, index) => (
                   <div
                     key={item.id}
-                    className="flex items-start justify-between gap-3 p-3.5 rounded-xl bg-[#11191b] border border-[#1b2729] print:bg-gray-50 print:border-gray-200"
+                    className="flex items-start justify-between gap-4 p-4 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors"
                   >
-                    <div className="flex items-start gap-3">
-                      <span className="w-5 h-5 rounded bg-[#162124] text-[#859496] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="flex items-start gap-3 flex-1">
+                      <span className="w-7 h-7 rounded-lg bg-white border border-gray-300 text-gray-700 text-sm font-bold flex items-center justify-center shrink-0 mt-1 shadow-sm">
                         {index + 1}
                       </span>
-                      <div>
-                        <h4 className="text-sm font-semibold text-white print:text-black">
+                      <div className="flex-1">
+                        <h4 className="text-sm font-bold text-gray-900 mb-1">
                           {item.name}
                         </h4>
-                        <p className="text-xs text-[#859496] mt-0.5">
+                        <p className="text-xs text-gray-600 leading-relaxed">
                           {item.description}
                         </p>
                       </div>
                     </div>
-                    <StatusBadge status={item.status} />
+                    <div className="shrink-0">
+                      <StatusBadge status={item.status} />
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Section 4: Findings */}
-            <div className="mb-8 pb-8 border-b border-[#1b2628]">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-sm font-extrabold">
+            <div className="mb-10 pb-8 border-b-2 border-gray-200">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center text-lg font-extrabold shadow-md">
                   4
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white print:text-black">
+                  <h3 className="text-xl font-bold text-gray-900">
                     Diagnostic Findings
                   </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Key observations and technical assessment results
+                  </p>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-[#121a1b] border border-[#223134] p-4 text-xs sm:text-sm text-[#ccd9da] print:bg-gray-50 print:text-black">
-                {website.dateAudited
-                  ? "Audit execution completed. Diagnostic telemetry indicates high compliance across baseline criteria with noted optimization vectors outlined below."
-                  : "No findings available. This website has not been audited yet."}
+              <div className="rounded-lg bg-gray-50 border-2 border-gray-200 p-5 shadow-sm">
+                <p className="text-sm text-gray-800 leading-relaxed">
+                  {website.dateAudited
+                    ? "Audit execution completed. Diagnostic telemetry indicates high compliance across baseline criteria with noted optimization vectors outlined below."
+                    : "No findings available. This website has not been audited yet."}
+                </p>
               </div>
             </div>
 
             {/* Section 5: Recommendations */}
-            <div className="mb-8 pb-8 border-b border-[#1b2628]">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center text-sm font-extrabold">
+            <div className="mb-10 pb-8 border-b-2 border-gray-200">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-sky-600 text-white flex items-center justify-center text-lg font-extrabold shadow-md">
                   5
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white print:text-black">
+                  <h3 className="text-xl font-bold text-gray-900">
                     Actionable Recommendations
                   </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Suggested improvements and next steps
+                  </p>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-[#121a1b] border border-[#223134] p-4 text-xs sm:text-sm text-[#ccd9da] print:bg-gray-50 print:text-black">
-                {website.dateAudited
-                  ? "Ensure scheduled quarterly recertification of SSL/TLS certificates, implement strict Content Security Policies (CSP), and automate broken-link detection."
-                  : "Recommendations will be available once the website audit is completed."}
+              <div className="rounded-lg bg-gray-50 border-2 border-gray-200 p-5 shadow-sm">
+                <p className="text-sm text-gray-800 leading-relaxed">
+                  {website.dateAudited
+                    ? "Ensure scheduled quarterly recertification of SSL/TLS certificates, implement strict Content Security Policies (CSP), and automate broken-link detection."
+                    : "Recommendations will be available once the website audit is completed."}
+                </p>
               </div>
             </div>
 
             {/* Section 6: Remarks */}
-            <div className="mb-4">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gray-500/10 border border-gray-500/20 text-gray-300 flex items-center justify-center text-sm font-extrabold">
+            <div className="mb-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white flex items-center justify-center text-lg font-extrabold shadow-md">
                   6
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white print:text-black">
+                  <h3 className="text-xl font-bold text-gray-900">
                     Lead Auditor Remarks
                   </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Additional notes and observations
+                  </p>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-[#121a1b] border border-[#223134] p-4.5 text-xs sm:text-sm text-[#ccd9da] print:bg-gray-50 print:text-black leading-relaxed">
-                {website.remarks}
+              <div className="rounded-lg bg-gray-50 border-2 border-gray-200 p-5 shadow-sm">
+                <p className="text-sm text-gray-800 leading-relaxed">
+                  {website.remarks}
+                </p>
               </div>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="bg-[#101719] px-6 sm:px-8 py-5 border-t border-[#1b2628] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#859496] print:bg-white print:border-gray-300 print:text-gray-500">
-            <span>
-              Report generated on{" "}
-              {new Date().toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </span>
-            <span className="font-mono text-[11px] text-[#6b7d80]">
-              HASH: #{website.id.toString().padStart(6, "0")} • VERIFIED
-            </span>
+          <div className="bg-gradient-to-r from-gray-100 to-gray-200 px-8 py-6 border-t-2 border-gray-300">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
+                <span className="text-sm text-gray-700 font-medium">
+                  Report generated on{" "}
+                  {new Date().toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500 font-mono">
+                  Document ID: #{website.id.toString().padStart(6, "0")}
+                </span>
+                <span className="px-2 py-1 rounded-md bg-green-100 border border-green-300 text-xs font-bold text-green-700">
+                  VERIFIED
+                </span>
+              </div>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-gray-300 text-center">
+              <p className="text-xs text-gray-600">
+                Website Audit & Maintenance System • Professional Report
+              </p>
+            </div>
           </div>
         </div>
       </div>
