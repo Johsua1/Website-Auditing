@@ -147,6 +147,7 @@ const Navigation = () => {
           {/* Center: Brand - Responsive */}
           <Link
             to="/"
+            aria-label="Website Audit & Maintenance home"
             className="flex items-center gap-2 group"
           >
             <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-white/10 border border-white/10 p-1 flex items-center justify-center transition-transform group-hover:scale-105 flex-shrink-0">
@@ -156,10 +157,8 @@ const Navigation = () => {
                 className="h-full w-full object-contain"
               />
             </div>
-            {/* Show "WA & M" on mobile, full text on larger screens */}
-            <span className="text-xs sm:text-sm lg:text-base font-bold tracking-tight text-white group-hover:text-[#fff800] transition-colors whitespace-nowrap">
-              <span className="hidden sm:inline">Website Audit <span className="text-[#859496] font-normal">&amp;</span> Maintenance</span>
-              <span className="inline sm:hidden">WA <span className="text-[#859496] font-normal">&amp;</span> M</span>
+            <span className="max-w-[150px] truncate text-[10px] font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-[#fff800] sm:max-w-none sm:text-sm lg:text-base">
+              Website Audit <span className="font-normal text-[#859496]">&amp;</span> Maintenance
             </span>
           </Link>
 

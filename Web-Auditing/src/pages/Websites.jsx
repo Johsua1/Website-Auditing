@@ -254,7 +254,7 @@ const Websites = ({ websites, onStartAudit }) => {
                   <button
                     type="button"
                     onClick={() => onStartAudit(website)}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#fff800] hover:bg-[#fffa66] text-black text-xs font-bold shadow-[0_0_15px_rgba(255,248,0,0.2)] transition-all active:scale-[0.98]"
+                    className="audit-action-button flex-1 flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#fff800] hover:bg-[#fffa66] text-black text-xs font-bold shadow-[0_0_15px_rgba(255,248,0,0.2)] transition-all active:scale-[0.98]"
                   >
                     <Play className="w-3.5 h-3.5 fill-black" />
                     Audit
