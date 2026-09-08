@@ -18,6 +18,7 @@ import {
 const ReportDetail = ({ websites }) => {
   const { id } = useParams();
   const website = websites.find((w) => w.id === parseInt(id));
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const activeSecurityList =
     website?.securityChecklist && website.securityChecklist.length > 0
@@ -62,6 +63,29 @@ const ReportDetail = ({ websites }) => {
     window.print();
   };
 
+  const handleDownload = async () => {
+    if (isDownloading) return;
+    
+    setIsDownloading(true);
+    
+    // Set document title for better PDF filename
+    const fileName = `${website.name.replace(/[^a-z0-9]/gi, '_')}_Audit_Report_${new Date().toISOString().split('T')[0]}`;
+    const originalTitle = document.title;
+    document.title = fileName;
+    
+    // Small delay to ensure title is set
+    await new Promise(resolve => setTimeout(resolve, 50));
+    
+    // Trigger browser print dialog (user can save as PDF)
+    window.print();
+    
+    // Restore original title
+    setTimeout(() => {
+      document.title = originalTitle;
+      setIsDownloading(false);
+    }, 100);
+  };
+
   return (
     <div className="min-h-screen pt-16 pb-16 print:pt-0 print:pb-0">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 print:max-w-none print:px-6 print:py-0">
@@ -85,8 +109,13 @@ const ReportDetail = ({ websites }) => {
               Print Report
             </button>
             <button
-              onClick={handlePrint}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#fff800] text-[#0b1011] text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#ffe600] transition-all shadow-glow-yellow"
+              onClick={handleDownload}
+              disabled={isDownloading}
+              className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-glow-yellow ${
+                isDownloading 
+                  ? 'bg-gray-400 text-gray-700 cursor-not-allowed' 
+                  : 'bg-[#fff800] text-[#0b1011] hover:bg-[#ffe600]'
+              }`}
             >
               <Download className="w-4 h-4" />
               Download PDF

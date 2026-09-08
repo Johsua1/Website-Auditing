@@ -348,3 +348,24 @@ html.light ::-webkit-scrollbar-thumb:hover { background: #8faab7; }
     print-color-adjust: exact !important;
   }
 }
+
+/* Print mode for PDF generation */
+.print-mode {
+  padding: 1.5rem !important;
+  max-width: none !important;
+  
+  /* Apply print-specific styles */
+  .print\:text-xl { font-size: 1.25rem !important; }
+  .print\:text-sm { font-size: 0.875rem !important; }
+  .print\:text-\[11px\] { font-size: 11px !important; }
+  .print\:text-\[10px\] { font-size: 10px !important; }
+  .print\:text-base { font-size: 1rem !important; }
+  .print\:p-6 { padding: 1.5rem !important; }
+  .print\:p-10 { padding: 2.5rem !important; }
+  .print\:px-6 { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
+  .print\:h-10 { height: 2.5rem !important; }
+  .print\:w-10 { width: 2.5rem !important; }
+  .print\:border-b-2 { border-bottom-width: 2px !important; }
+  .print\:shadow-none { box-shadow: none !important; }
+  .print\:border-none { border-style: none !important; }
+}
