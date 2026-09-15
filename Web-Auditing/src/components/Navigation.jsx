@@ -20,7 +20,6 @@ import {
   ExternalLink,
   Sun,
   Moon,
-  Briefcase,
 } from "lucide-react";
 import websiteLogo from "../assets/website logo.png";
 
@@ -300,19 +299,6 @@ const Navigation = () => {
           >
             <FileText className="h-4 w-4 shrink-0 text-inherit" />
             Full Report
-          </Link>
-
-          <Link
-            to="/portfolio"
-            className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all ${
-              isActive("/portfolio")
-                ? "bg-[#182325] text-[#fff800] border border-[#2d3e42] shadow-xs relative before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:bg-[#fff800] before:rounded-r"
-                : "text-[#94a3b8] hover:bg-[#12191b] hover:text-white border border-transparent"
-            }`}
-            onClick={closeSidebar}
-          >
-            <Briefcase className="h-4 w-4 shrink-0 text-inherit" />
-            Our Portfolio
           </Link>
         </div>
 
