@@ -161,7 +161,7 @@ const Websites = ({ websites, onStartAudit }) => {
                 <div className="flex items-center gap-3.5 mb-3">
                   <CompanyLogo
                     website={website}
-                    className="h-14 w-14 rounded-xl object-contain border border-white/10 bg-white p-1.5 shadow-sm shrink-0"
+                    className="h-16 w-16 rounded-xl object-contain border border-[#e2e8f0] bg-gray-100 p-1.5 shadow-sm shrink-0"
                   />
                   <div className="min-w-0 flex-1">
                     <h3 className="text-base font-bold text-white group-hover:text-[#fff800] transition-colors truncate">

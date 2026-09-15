@@ -275,7 +275,7 @@ const Dashboard = ({ websites, onStartAudit }) => {
                           >
                             <CompanyLogo
                               website={website}
-                              className="h-11 w-11 rounded-xl object-contain border border-white/10 bg-white p-1 shadow-sm transition-transform group-hover/logo:scale-105"
+                              className="h-16 w-16 rounded-xl object-contain border border-[#e2e8f0] bg-gray-100 p-1.5 shadow-sm transition-transform group-hover/logo:scale-105"
                             />
                           </Link>
                           <div className="min-w-0">
@@ -383,7 +383,7 @@ const Dashboard = ({ websites, onStartAudit }) => {
                     >
                       <CompanyLogo
                         website={website}
-                        className="h-12 w-12 rounded-xl object-contain border border-white/10 bg-white p-1"
+                        className="h-16 w-16 rounded-xl object-contain border border-[#e2e8f0] bg-gray-100 p-1.5"
                       />
                     </Link>
                     <div className="flex-1 min-w-0">
@@ -482,7 +482,7 @@ const Dashboard = ({ websites, onStartAudit }) => {
                       >
                         <CompanyLogo
                           website={website}
-                          className="h-12 w-12 rounded-xl object-contain border border-white/10 bg-white p-1"
+                          className="h-16 w-16 rounded-xl object-contain border border-[#e2e8f0] bg-gray-100 p-1.5"
                         />
                       </Link>
                       <div className="min-w-0 flex-1">

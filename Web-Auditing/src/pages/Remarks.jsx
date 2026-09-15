@@ -90,7 +90,7 @@ const Remarks = ({ websites }) => {
                       <div className="flex items-center gap-4">
                         <CompanyLogo
                           website={website}
-                          className="h-14 w-14 rounded-xl object-contain border border-white/10 bg-white p-1 shrink-0 shadow-sm"
+                          className="h-16 w-16 rounded-xl object-contain border border-[#e2e8f0] bg-gray-100 p-1.5 shrink-0 shadow-sm"
                         />
                         <div className="min-w-0">
                           <h3 className="text-lg font-bold text-white group-hover:text-[#fff800] transition-colors truncate">

@@ -124,7 +124,7 @@ const WebsiteDetail = ({ websites, onStartAudit }) => {
             <div className="flex items-start gap-4">
               <CompanyLogo
                 website={website}
-                className="h-20 w-20 rounded-2xl object-contain border border-white/10 bg-white p-2 shadow-md shrink-0"
+                className="h-24 w-24 rounded-2xl object-contain border border-[#e2e8f0] bg-gray-100 p-2 shadow-md shrink-0"
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 mb-1.5 flex-wrap">

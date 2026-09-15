@@ -163,7 +163,7 @@ const ReportDetail = ({ websites }) => {
               <div className="flex items-start gap-4 mb-4">
                 <CompanyLogo
                   website={website}
-                  className="h-12 w-12 print:h-10 print:w-10 rounded border border-gray-300 bg-white p-2 object-contain"
+                  className="h-16 w-16 print:h-12 print:w-12 rounded-xl border border-[#e2e8f0] bg-gray-100 p-2 object-contain"
                 />
                 <div className="flex-1">
                   <h3 className="text-lg print:text-base font-bold text-gray-900 mb-1">{website.name}</h3>
