@@ -13,6 +13,7 @@ import SEO from './pages/SEO';
 import Remarks from './pages/Remarks';
 import Reports from './pages/Reports';
 import ReportDetail from './pages/ReportDetail';
+import Portfolio from './pages/Portfolio';
 import { websites as initialWebsites } from './data/mockData';
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
             <Route path="/remarks" element={<Remarks websites={websites} />} />
             <Route path="/reports" element={<Reports websites={websites} />} />
             <Route path="/reports/:id" element={<ReportDetail websites={websites} />} />
+            <Route path="/portfolio" element={<Portfolio />} />
           </Routes>
 
           {showAuditModal && (
