@@ -97,7 +97,7 @@
 
 /* Light theme: quiet chrome, strong hierarchy, and teal actions. */
 html.light {
-  --light-bg: #f6f8fb;
+  --light-bg: #ffffff;
   --light-surface: #ffffff;
   --light-surface-muted: #f0f5f7;
   --light-surface-active: #e4f3f0;
