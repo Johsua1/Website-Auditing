@@ -58,10 +58,6 @@ const Reports = ({ websites }) => {
             <p className="text-sm text-[#859496] light:text-gray-600">
               Try adjusting your search terms or filters.
             </p>
-            </h3>
-            <p className="text-xs text-[#859496]">
-              Try searching with another keyword.
-            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
