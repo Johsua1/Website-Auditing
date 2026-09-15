@@ -67,7 +67,7 @@ const Reports = ({ websites }) => {
                 className="relative rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] hover:border-[#2d3e41] shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col group backdrop-blur-md"
               >
                 {/* Card Header */}
-                <div className="bg-gradient-to-b from-[#152022] to-[#101718] p-5 border-b border-[#1c282a]">
+                <div className="report-card-header bg-gradient-to-b from-[#152022] to-[#101718] p-5 border-b border-[#1c282a]">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
                       <CompanyLogo
@@ -75,16 +75,16 @@ const Reports = ({ websites }) => {
                         className="h-12 w-12 rounded-xl object-contain border border-white/10 bg-white p-1 shrink-0 shadow-sm"
                       />
                       <div className="min-w-0">
-                        <h3 className="font-bold text-white group-hover:text-[#fff800] transition-colors truncate text-base">
+                        <h3 className="report-card-title font-bold text-white group-hover:text-[#fff800] transition-colors truncate text-base">
                           {website.name}
                         </h3>
-                        <div className="flex items-center gap-1.5 text-xs text-[#859496] mt-0.5">
+                        <div className="report-card-date flex items-center gap-1.5 text-xs text-[#859496] mt-0.5">
                           <Calendar className="w-3 h-3 text-[#fff800]" />
                           <span>{formatDate(website.dateAudited)}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="w-8 h-8 rounded-lg bg-[#192527] border border-[#27373a] flex items-center justify-center shrink-0">
+                    <div className="report-card-icon w-8 h-8 rounded-lg bg-[#192527] border border-[#27373a] flex items-center justify-center shrink-0">
                       <FileText className="w-4 h-4 text-[#fff800]" />
                     </div>
                   </div>
