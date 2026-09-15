@@ -369,3 +369,42 @@ html.light ::-webkit-scrollbar-thumb:hover { background: #8faab7; }
   .print\:shadow-none { box-shadow: none !important; }
   .print\:border-none { border-style: none !important; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   LIGHT MODE - FULL AUDIT REPORTS PAGE STYLING
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Report Card Headers - Light Mode */
+html.light .report-card-header {
+  background: linear-gradient(to bottom, #f0f4f8, #e5eef5) !important;
+  border-bottom-color: #d0dce6 !important;
+}
+
+/* Report Card Title - Light Mode */
+html.light .report-card-title {
+  color: #1a2332 !important;
+}
+
+html.light .report-card-title:hover {
+  color: #087f73 !important;
+}
+
+/* Report Card Date Text - Light Mode */
+html.light .report-card-date {
+  color: #5a6c7d !important;
+}
+
+html.light .report-card-date .w-3 {
+  color: #087f73 !important;
+}
+
+/* Report Card Icon Container - Light Mode */
+html.light .report-card-icon {
+  background-color: #ffffff !important;
+  border-color: #d0dce6 !important;
+}
+
+html.light .report-card-icon .w-4 {
+  color: #087f73 !important;
+}
