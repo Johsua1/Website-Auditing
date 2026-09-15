@@ -67,7 +67,7 @@ const Reports = ({ websites }) => {
                 className="relative rounded-2xl bg-[#0e1516]/90 border border-[#202c2e] hover:border-[#2d3e41] shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all overflow-hidden flex flex-col group backdrop-blur-md"
               >
                 {/* Card Header */}
-                <div className="report-card-header bg-gradient-to-b from-[#152022] to-[#101718] p-5 border-b border-[#1c282a]">
+                <div className="report-card-header bg-gradient-to-b from-[#2a3739] to-[#232f32] p-5 border-b border-[#3d4e52]">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
                       <CompanyLogo
@@ -78,13 +78,13 @@ const Reports = ({ websites }) => {
                         <h3 className="report-card-title font-bold text-white group-hover:text-[#fff800] transition-colors truncate text-base">
                           {website.name}
                         </h3>
-                        <div className="report-card-date flex items-center gap-1.5 text-xs text-[#859496] mt-0.5">
+                        <div className="report-card-date flex items-center gap-1.5 text-xs text-[#94a3b8] mt-0.5">
                           <Calendar className="w-3 h-3 text-[#fff800]" />
                           <span>{formatDate(website.dateAudited)}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="report-card-icon w-8 h-8 rounded-lg bg-[#192527] border border-[#27373a] flex items-center justify-center shrink-0">
+                    <div className="report-card-icon w-8 h-8 rounded-lg bg-[#2d3e42] border border-[#3d4e52] flex items-center justify-center shrink-0">
                       <FileText className="w-4 h-4 text-[#fff800]" />
                     </div>
                   </div>

@@ -103,7 +103,7 @@ const ReportDetail = ({ websites }) => {
           <div className="flex items-center gap-2.5">
             <button
               onClick={handlePrint}
-              className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#121b1d] text-white text-xs font-semibold rounded-xl border border-[#223033] hover:border-[#34484c] hover:bg-[#182326] transition-all"
+              className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#1e2a2d] text-white text-xs font-semibold rounded-xl border border-[#2d3e42] hover:border-[#3e5155] hover:bg-[#243338] transition-all"
             >
               <Printer className="w-4 h-4 text-[#859496]" />
               Print Report
