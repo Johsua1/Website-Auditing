@@ -157,7 +157,7 @@ const Navigation = () => {
                 className="h-full w-full object-contain"
               />
             </div>
-            <span className="max-w-[150px] truncate text-[10px] font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-[#fff800] sm:max-w-none sm:text-sm lg:text-base">
+            <span className="text-[10px] font-bold leading-tight tracking-tight text-white transition-colors group-hover:text-[#fff800] sm:text-sm lg:text-base">
               Website Audit <span className="font-normal text-[#859496]">&amp;</span> Maintenance
             </span>
           </Link>
